@@ -3,7 +3,7 @@ name: Deploy GitHub Pages
 on:
   push:
     branches: [bay-pay]
-    paths: [index.html, CNAME, .nojekyll]
+    paths: [index.html, "Bay Pay.html", CNAME, .nojekyll]
   workflow_dispatch:
 
 permissions:
