@@ -6,13 +6,18 @@ import bcrypt from 'bcryptjs';
 const dynamo = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 const secrets = new SecretsManagerClient({});
 
-const TABLE = process.env.DYNAMODB_TABLE;
+const TABLE  = process.env.DYNAMODB_TABLE;
 const BRIDGE = process.env.BRIDGE_BASE || 'https://api.bridge.xyz/v0';
 
 let _cachedKey = null;
 
 async function getBridgeKey() {
   if (_cachedKey) return _cachedKey;
+  // Prefer direct env var (simpler); fall back to Secrets Manager
+  if (process.env.BRIDGE_API_KEY) {
+    _cachedKey = process.env.BRIDGE_API_KEY;
+    return _cachedKey;
+  }
   const res = await secrets.send(new GetSecretValueCommand({ SecretId: process.env.SECRETS_ARN }));
   _cachedKey = JSON.parse(res.SecretString).BRIDGE_API_KEY;
   return _cachedKey;
