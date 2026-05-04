@@ -5,1280 +5,518 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bay Pay — Sign In</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    /* ── Design tokens (identical to main site) ──────────────────── */
-    :root {
-      --navy:      #13224A;
-      --navy-2:    #1B2D5C;
-      --paper:     #FFFFFF;
-      --paper-2:   #FAFAFB;
-      --paper-3:   #F4F4F6;
-      --ink:       #0E1730;
-      --line:      #E6E5E2;
-      --line-2:    #D8D6D1;
-      --muted:     #6B6F7B;
-      --muted-2:   #8A8E97;
-      --teal:      #2BAEC9;
-      --teal-ink:  #1B7A8E;
-      --teal-tint: #E6F4F7;
-      --good:      #2E8E5C;
-      --danger:    #C0392B;
-      --serif: "Cormorant Garamond", Georgia, serif;
-      --sans:  "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      --mono:  "JetBrains Mono", "SF Mono", Menlo, monospace;
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{height:100%;font-size:15px}
+    :root{
+      --navy:#13224A;--navy-2:#1B2D5C;--navy-3:#243870;
+      --teal:#2BAEC9;--teal-tint:#E6F4F7;--teal-ink:#1B7A8E;
+      --paper:#FFFFFF;--paper-2:#FAFAFB;--paper-3:#F4F4F6;
+      --ink:#0E1730;--muted:#6B6F7B;--muted-2:#8A8E97;
+      --line:#E6E5E2;--line-2:#D8D6D1;
+      --good:#2E8E5C;--good-tint:#E8F5EF;
+      --warn:#B45309;--warn-tint:#FEF3C7;
+      --danger:#C0392B;--danger-tint:#FDEEEC;
+      --serif:"Cormorant Garamond",Georgia,serif;
+      --sans:"Inter",-apple-system,BlinkMacSystemFont,sans-serif;
+      --mono:"JetBrains Mono","SF Mono",Menlo,monospace;
+      --radius:6px;--shadow:0 1px 4px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.06);
     }
+    body{font-family:var(--sans);color:var(--ink);background:var(--paper-3);height:100%}
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    /* ── Shared utils ─────────────────────────────────── */
+    [hidden]{display:none!important}
+    .badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-family:var(--mono);font-size:11px;font-weight:500}
+    .badge-active{background:var(--good-tint);color:var(--good)}
+    .badge-pending{background:var(--warn-tint);color:var(--warn)}
+    .badge-inactive{background:var(--paper-3);color:var(--muted)}
+    .dot{width:7px;height:7px;border-radius:50%;background:currentColor;display:inline-block}
+    .spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .error-msg{font-size:13px;color:var(--danger);background:var(--danger-tint);padding:10px 14px;border-radius:var(--radius);border-left:3px solid var(--danger);margin-top:12px}
+    .success-msg{font-size:13px;color:var(--good);background:var(--good-tint);padding:10px 14px;border-radius:var(--radius);border-left:3px solid var(--good);margin-top:12px}
 
-    html, body {
-      height: 100%;
-      font-family: var(--sans);
-      font-size: 15px;
-      line-height: 1.6;
-      color: var(--ink);
-      background: var(--paper);
-      -webkit-font-smoothing: antialiased;
-    }
+    /* ── Buttons ──────────────────────────────────────── */
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--sans);font-size:14px;font-weight:500;border:none;border-radius:var(--radius);cursor:pointer;transition:all .18s;text-decoration:none;white-space:nowrap}
+    .btn:disabled{opacity:.55;cursor:not-allowed}
+    .btn-primary{background:var(--navy);color:#fff;padding:11px 22px}
+    .btn-primary:hover:not(:disabled){background:var(--navy-2)}
+    .btn-teal{background:var(--teal);color:#fff;padding:11px 22px}
+    .btn-teal:hover:not(:disabled){background:var(--teal-ink)}
+    .btn-ghost{background:transparent;color:var(--navy);border:1.5px solid var(--line-2);padding:10px 20px}
+    .btn-ghost:hover:not(:disabled){border-color:var(--navy);background:var(--paper-2)}
+    .btn-danger{background:var(--danger-tint);color:var(--danger);border:1px solid #FECACA;padding:10px 20px}
+    .btn-danger:hover:not(:disabled){background:#FEE2E2}
+    .btn-full{width:100%}
+    .btn-sm{padding:7px 14px;font-size:13px}
+    .btn-lg{padding:14px 28px;font-size:15px}
 
-    a { color: inherit; text-decoration: none; }
-    button { font: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+    /* ── Form elements ────────────────────────────────── */
+    .field{display:flex;flex-direction:column;gap:5px;margin-bottom:16px}
+    .field label{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+    .field input,.field select,.field textarea{font-family:var(--sans);font-size:14px;color:var(--ink);background:var(--paper);border:1.5px solid var(--line);border-radius:var(--radius);padding:11px 13px;transition:border-color .15s,box-shadow .15s;width:100%}
+    .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(43,174,201,.12)}
+    .field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .pw-wrap{position:relative}
+    .pw-wrap input{padding-right:42px}
+    .pw-toggle{position:absolute;right:11px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:16px;line-height:1;padding:2px}
 
-    /* ── Shared button styles (identical to main site) ──────────── */
-    .btn {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 11px 18px; border-radius: 4px;
-      font-size: 13.5px; font-weight: 500;
-      transition: all .15s ease;
-      white-space: nowrap; letter-spacing: .005em;
-      cursor: pointer; border: none;
-    }
-    .btn-primary  { background: var(--navy); color: var(--paper); }
-    .btn-primary:hover { background: var(--ink); }
-    .btn-secondary { border: 1px solid var(--line-2); color: var(--ink); background: var(--paper); }
-    .btn-secondary:hover { border-color: var(--ink); }
-    .btn-ghost    { color: var(--ink); background: transparent; }
-    .btn-ghost:hover { background: var(--paper-3); }
-    .btn-danger   { background: var(--danger); color: var(--paper); }
-    .btn-danger:hover { opacity: .9; }
-    .btn-lg { padding: 15px 24px; font-size: 14.5px; }
-    .btn-full { width: 100%; justify-content: center; }
-    .btn-arrow::after { content: "→"; margin-left: 4px; transition: transform .15s; }
-    .btn-arrow:hover::after { transform: translateX(3px); }
+    /* ── Auth shell ───────────────────────────────────── */
+    .auth-shell{display:flex;min-height:100vh}
+    .auth-left{flex:0 0 42%;background:var(--navy);color:#fff;padding:3rem 3.5rem;display:flex;flex-direction:column;gap:2rem}
+    .auth-right{flex:1;display:flex;align-items:center;justify-content:center;padding:2.5rem}
+    .auth-box{width:100%;max-width:420px}
+    .brand-row{display:flex;align-items:center;gap:10px}
+    .bp-mark{width:32px;height:32px;background:var(--teal);border-radius:6px;display:flex;align-items:center;justify-content:center}
+    .bp-mark svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .brand-word{font-family:var(--serif);font-size:22px;font-weight:600;letter-spacing:.01em;color:#fff}
+    .auth-tagline{font-family:var(--serif);font-style:italic;font-size:1.9rem;line-height:1.3;color:#fff;opacity:.95}
+    .auth-features{display:flex;flex-direction:column;gap:12px}
+    .auth-feat{display:flex;align-items:flex-start;gap:12px;font-size:14px;color:rgba(255,255,255,.8);line-height:1.5}
+    .auth-feat-icon{width:28px;height:28px;border-radius:50%;background:rgba(43,174,201,.2);border:1px solid rgba(43,174,201,.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-size:13px}
+    .auth-corridors{display:flex;flex-wrap:wrap;gap:6px}
+    .corr-tag{padding:4px 10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:20px;font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.7)}
+    .auth-switch{font-size:13px;color:rgba(255,255,255,.6)}
+    .auth-switch a{color:var(--teal);text-decoration:none;font-weight:500}
+    .auth-box-title{font-family:var(--serif);font-size:2rem;font-weight:600;color:var(--ink);margin-bottom:4px}
+    .auth-box-sub{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:28px}
+    .auth-divider{display:flex;align-items:center;gap:12px;margin:18px 0;color:var(--muted);font-size:12px}
+    .auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--line)}
+    .auth-foot{text-align:center;font-size:13px;color:var(--muted);margin-top:18px}
+    .auth-foot a{color:var(--navy);font-weight:500;text-decoration:none}
 
-    /* ── Brand mark (identical CSS to main site) ─────────────────── */
-    .bp-mark {
-      width: 36px; height: 36px;
-      position: relative; flex-shrink: 0; display: inline-block;
-    }
-    .bp-mark .ring {
-      position: absolute; inset: 0; border-radius: 50%;
-      background: var(--navy);
-    }
-    .bp-mark.light .ring { background: var(--paper); }
-    .bp-mark .diamond-outer {
-      position: absolute; inset: 22%;
-      background: var(--paper); transform: rotate(45deg);
-    }
-    .bp-mark.light .diamond-outer { background: var(--navy); }
-    .bp-mark .diamond-inner {
-      position: absolute; inset: 42%;
-      background: var(--navy); transform: rotate(45deg);
-    }
-    .bp-mark.light .diamond-inner { background: var(--paper); }
-    .bp-mark .pip {
-      position: absolute; width: 10%; height: 10%;
-      background: var(--teal); transform: rotate(45deg);
-      left: 50%; top: 50%; margin: -5% 0 0 -5%;
-    }
-    .bp-mark .pip.n { transform: translateY(-455%) rotate(45deg); }
-    .bp-mark .pip.s { transform: translateY(355%)  rotate(45deg); }
-    .bp-mark .pip.e { transform: translateX(355%)  rotate(45deg); }
-    .bp-mark .pip.w { transform: translateX(-455%) rotate(45deg); }
-    .bp-mark.lg { width: 52px; height: 52px; }
+    /* ── KYC view ─────────────────────────────────────── */
+    .kyc-shell{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;background:var(--paper-3)}
+    .kyc-card{background:var(--paper);border-radius:12px;padding:3rem;max-width:520px;width:100%;box-shadow:var(--shadow);text-align:center}
+    .kyc-card h2{font-family:var(--serif);font-size:2rem;margin-bottom:.5rem}
+    .kyc-card p{color:var(--muted);font-size:14px;line-height:1.6;margin-bottom:1.5rem}
+    .kyc-step-row{display:flex;flex-direction:column;gap:10px;text-align:left;margin:1.5rem 0}
+    .kyc-step{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--muted)}
+    .kyc-step-num{width:24px;height:24px;border-radius:50%;background:var(--teal);color:#fff;font-family:var(--mono);font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 
-    .brand-row { display: flex; align-items: center; gap: 14px; }
-    .brand-word {
-      font-family: var(--serif); font-size: 24px; color: var(--navy);
-      font-weight: 600; letter-spacing: -.015em; line-height: 1;
-    }
-    .brand-word.light { color: var(--paper); }
-    .brand-tagline {
-      font-family: var(--mono); font-size: 9px; letter-spacing: .22em;
-      color: var(--muted); text-transform: uppercase;
-      border-top: 1px solid var(--line); padding-top: 4px; margin-top: 4px;
-    }
-    .brand-tagline.light { color: rgba(255,255,255,.45); border-top-color: rgba(255,255,255,.15); }
-    .brand-stack { display: flex; flex-direction: column; line-height: 1; }
+    /* ── Dashboard shell ──────────────────────────────── */
+    #view-dashboard{display:flex;flex-direction:column;min-height:100vh}
+    .dash-topbar{position:sticky;top:0;z-index:100;height:56px;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 1.5rem;gap:1rem}
+    .dash-topbar .brand-word{color:var(--ink)}
+    .topbar-spacer{flex:1}
+    .topbar-user{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:500;color:var(--ink)}
+    .user-avatar{width:30px;height:30px;border-radius:50%;background:var(--teal);color:#fff;font-family:var(--mono);font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .dash-layout{display:flex;flex:1}
 
-    /* ── Eyebrow label ───────────────────────────────────────────── */
-    .eyebrow {
-      font-family: var(--mono); font-size: 10.5px;
-      letter-spacing: .18em; text-transform: uppercase; color: var(--muted);
-      display: inline-flex; align-items: center; gap: 8px;
-    }
-    .eyebrow::before {
-      content: ""; width: 5px; height: 5px;
-      background: var(--teal); transform: rotate(45deg); display: inline-block;
-    }
+    /* ── Sidebar ──────────────────────────────────────── */
+    .dash-sidebar{width:220px;flex-shrink:0;background:var(--navy);padding:1.25rem 0;display:flex;flex-direction:column;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto}
+    .nav-section{margin-bottom:1.25rem}
+    .nav-section-label{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.3);padding:0 1.25rem;margin-bottom:6px}
+    .nav-item{display:flex;align-items:center;gap:10px;padding:9px 1.25rem;font-size:13.5px;color:rgba(255,255,255,.62);cursor:pointer;border-left:3px solid transparent;transition:all .15s;user-select:none}
+    .nav-item:hover{background:rgba(255,255,255,.06);color:#fff}
+    .nav-item.active{color:#fff;border-left-color:var(--teal);background:rgba(43,174,201,.1)}
+    .nav-item-icon{width:18px;text-align:center;font-size:15px;flex-shrink:0}
+    .nav-divider{height:1px;background:rgba(255,255,255,.08);margin:8px 1.25rem}
+    .nav-signout{margin-top:auto;padding-top:.75rem}
 
-    /* ══════════════════════════════════════════════════════════════
-       LOGIN VIEW
-    ══════════════════════════════════════════════════════════════ */
-    #view-login {
-      display: flex; min-height: 100vh;
-    }
+    /* ── Main pane area ───────────────────────────────── */
+    .dash-main{flex:1;overflow-y:auto;padding:2rem;background:var(--paper-3)}
+    .pane{display:none}
+    .pane.active{display:block}
+    .pane-title{font-family:var(--serif);font-size:1.7rem;font-weight:600;color:var(--ink);margin-bottom:4px}
+    .pane-sub{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:1.5rem}
 
-    /* Left panel */
-    .login-left {
-      width: 42%; min-width: 320px;
-      background: var(--navy);
-      color: var(--paper);
-      display: flex; flex-direction: column;
-      padding: clamp(32px, 5vw, 64px);
-      position: relative; overflow: hidden;
-    }
-    .login-left::before {
-      content: "";
-      position: absolute; right: -80px; top: -80px;
-      width: 320px; height: 320px;
-      border: 1px solid rgba(43,174,201,.15); border-radius: 50%;
-      pointer-events: none;
-    }
-    .login-left::after {
-      content: "";
-      position: absolute; right: 20px; bottom: -40px;
-      width: 200px; height: 200px;
-      border: 1px solid rgba(43,174,201,.08); border-radius: 50%;
-      pointer-events: none;
-    }
-    .login-left-body {
-      flex: 1; display: flex; flex-direction: column;
-      justify-content: center; gap: 0; margin-top: 48px;
-    }
-    .login-hero-text {
-      font-family: var(--serif);
-      font-size: clamp(32px, 4vw, 52px);
-      font-weight: 400; font-style: italic;
-      line-height: 1.05; letter-spacing: -.02em;
-      color: var(--paper);
-      margin-bottom: 36px;
-    }
-    .login-features { display: flex; flex-direction: column; gap: 20px; }
-    .login-feature {
-      display: flex; align-items: flex-start; gap: 14px;
-    }
-    .login-feat-icon {
-      width: 28px; height: 28px; flex-shrink: 0;
-      background: rgba(43,174,201,.15); border-radius: 6px;
-      display: grid; place-items: center;
-      font-family: var(--mono); font-size: 11px; color: var(--teal);
-      margin-top: 2px;
-    }
-    .login-feat-title {
-      font-family: var(--mono); font-size: 10.5px;
-      letter-spacing: .12em; text-transform: uppercase;
-      color: rgba(255,255,255,.5); margin-bottom: 3px;
-    }
-    .login-feat-val {
-      font-family: var(--serif); font-size: 17px; color: var(--paper);
-      letter-spacing: -.01em;
-    }
-    .login-corridors {
-      display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px;
-    }
-    .login-ctag {
-      font-family: var(--mono); font-size: 9.5px;
-      background: rgba(43,174,201,.18); color: var(--teal);
-      padding: 3px 8px; border-radius: 3px;
-    }
-    .login-left-footer {
-      margin-top: 48px;
-      font-family: var(--mono); font-size: 11px;
-      color: rgba(255,255,255,.4);
-    }
-    .login-left-footer a {
-      color: var(--teal); text-decoration: underline;
-      text-underline-offset: 3px;
-    }
-    .login-left-footer a:hover { opacity: .8; }
+    /* ── Panel cards ──────────────────────────────────── */
+    .card{background:var(--paper);border-radius:10px;padding:1.5rem;box-shadow:var(--shadow)}
+    .card-title{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
 
-    /* Right panel */
-    .login-right {
-      flex: 1;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      padding: clamp(32px, 5vw, 64px);
-      background: var(--paper);
-    }
-    .login-form-wrap { width: 100%; max-width: 400px; }
-    .login-form-wrap > .brand-row { margin-bottom: 48px; }
-    .login-title {
-      font-family: var(--serif); font-size: clamp(30px, 4vw, 42px);
-      color: var(--navy); font-weight: 500; letter-spacing: -.02em;
-      margin-bottom: 6px;
-    }
-    .login-subtitle {
-      font-family: var(--mono); font-size: 11px;
-      letter-spacing: .14em; text-transform: uppercase;
-      color: var(--muted); margin-bottom: 32px;
-    }
+    /* ── Balance card ─────────────────────────────────── */
+    .balance-card{background:linear-gradient(135deg,var(--navy) 0%,#1b3060 60%,#243a6e 100%);color:#fff;border-radius:12px;padding:1.75rem;margin-bottom:1rem}
+    .balance-label{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;opacity:.6;margin-bottom:6px}
+    .balance-amount{font-family:var(--serif);font-size:2rem;font-weight:600;line-height:1.2}
+    .balance-sub{font-size:13px;opacity:.7;margin-top:6px}
+    .balance-status{display:inline-flex;align-items:center;gap:6px;margin-top:14px;font-family:var(--mono);font-size:11px;background:rgba(255,255,255,.1);padding:5px 12px;border-radius:20px}
 
-    /* Form fields */
-    .field { margin-bottom: 20px; }
-    .field-row {
-      display: flex; justify-content: space-between;
-      align-items: baseline; margin-bottom: 7px;
-    }
-    .field label {
-      font-family: var(--mono); font-size: 10.5px;
-      letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
-    }
-    .field-link {
-      font-family: var(--mono); font-size: 10px;
-      color: var(--teal-ink); text-decoration: underline;
-      text-underline-offset: 2px;
-    }
-    .field-link:hover { color: var(--teal); }
-    .field input {
-      width: 100%;
-      padding: 12px 14px;
-      border: 1px solid var(--line);
-      border-radius: 4px;
-      font-family: var(--sans); font-size: 14px; color: var(--ink);
-      background: var(--paper);
-      transition: border-color .15s, box-shadow .15s;
-      -webkit-appearance: none;
-    }
-    .field input:focus {
-      outline: none;
-      border-color: var(--teal);
-      box-shadow: 0 0 0 3px rgba(43,174,201,.12);
-    }
-    .field input::placeholder { color: var(--muted-2); }
-    .field-pw-wrap { position: relative; }
-    .field-pw-wrap input { padding-right: 44px; }
-    .field-pw-toggle {
-      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-      color: var(--muted); cursor: pointer; font-size: 14px;
-      user-select: none; padding: 4px;
-    }
-    .field-pw-toggle:hover { color: var(--teal-ink); }
+    /* ── KYC alert ────────────────────────────────────── */
+    .kyc-alert{display:flex;align-items:center;justify-content:space-between;gap:1rem;background:var(--warn-tint);border:1px solid #FCD34D;border-radius:var(--radius);padding:12px 16px;margin-bottom:1rem;font-size:13px;color:var(--warn)}
 
-    .login-error {
-      display: none;
-      background: #fdf2f2; border: 1px solid #f5c6cb;
-      border-radius: 4px; padding: 10px 14px;
-      font-family: var(--mono); font-size: 11px; color: var(--danger);
-      margin-bottom: 16px;
-    }
-    .login-error.show { display: block; }
+    /* ── Rate ticker ──────────────────────────────────── */
+    .rate-ticker{background:var(--teal);overflow:hidden;height:32px;display:flex;align-items:center;margin-bottom:1rem;border-radius:var(--radius)}
+    .rate-ticker-inner{display:flex;gap:3rem;padding:0 1rem;white-space:nowrap;animation:ticker 30s linear infinite;font-family:var(--mono);font-size:12px;color:#fff}
+    @keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
-    .login-divider {
-      display: flex; align-items: center; gap: 12px;
-      margin: 20px 0;
-      font-family: var(--mono); font-size: 10px;
-      letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
-    }
-    .login-divider::before, .login-divider::after {
-      content: ""; flex: 1; height: 1px; background: var(--line);
-    }
-    .login-footer-note {
-      margin-top: 24px;
-      font-family: var(--mono); font-size: 10.5px;
-      color: var(--muted); text-align: center;
-    }
-    .login-footer-note a { color: var(--teal-ink); text-decoration: underline; text-underline-offset: 2px; }
+    /* ── Tables ───────────────────────────────────────── */
+    .data-table{width:100%;border-collapse:collapse;font-size:13px}
+    .data-table th{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:10px 12px;border-bottom:1.5px solid var(--line);text-align:left}
+    .data-table td{padding:11px 12px;border-bottom:1px solid var(--line-2);color:var(--ink);vertical-align:middle}
+    .data-table tr:last-child td{border-bottom:none}
+    .data-table tr:hover td{background:var(--paper-2)}
+    .mono{font-family:var(--mono);font-size:12px}
 
-    /* ══════════════════════════════════════════════════════════════
-       DASHBOARD VIEW
-    ══════════════════════════════════════════════════════════════ */
-    #view-dashboard {
-      display: none;
-      flex-direction: column;
-      min-height: 100vh;
-    }
+    /* ── Deposit block ────────────────────────────────── */
+    .deposit-block{background:var(--paper-3);border-radius:var(--radius);padding:1rem}
+    .deposit-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--line)}
+    .deposit-row:last-child{border-bottom:none}
+    .deposit-label{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+    .deposit-value{font-family:var(--mono);font-size:13px;font-weight:500}
+    .copy-btn{background:none;border:1px solid var(--line);border-radius:4px;padding:3px 8px;font-size:11px;cursor:pointer;color:var(--muted);transition:all .15s}
+    .copy-btn:hover{border-color:var(--teal);color:var(--teal)}
 
-    /* Topbar */
-    .db-topbar {
-      position: sticky; top: 0; z-index: 50;
-      background: rgba(255,255,255,.94);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--line);
-    }
-    .db-topbar-inner {
-      display: flex; align-items: center; gap: 16px;
-      padding: 14px clamp(16px,4vw,32px);
-      max-width: 100%;
-    }
-    .db-topbar .brand-row { flex-shrink: 0; }
-    .db-spacer { flex: 1; }
-    .db-topbar-actions { display: flex; align-items: center; gap: 10px; }
-    .db-notif-btn {
-      width: 34px; height: 34px; border-radius: 50%;
-      background: var(--paper-3); display: grid; place-items: center;
-      font-size: 15px; cursor: pointer; border: none;
-      transition: background .15s;
-    }
-    .db-notif-btn:hover { background: var(--line); }
-    .db-user-chip {
-      display: flex; align-items: center; gap: 8px;
-      padding: 6px 12px 6px 6px; border-radius: 100px;
-      border: 1px solid var(--line); cursor: pointer;
-      transition: border-color .15s;
-    }
-    .db-user-chip:hover { border-color: var(--ink); }
-    .db-avatar {
-      width: 26px; height: 26px; border-radius: 50%;
-      background: var(--navy); color: var(--paper);
-      display: grid; place-items: center;
-      font-family: var(--mono); font-size: 10px; font-weight: 600;
-    }
-    .db-user-name {
-      font-family: var(--mono); font-size: 11.5px; color: var(--ink); font-weight: 500;
-    }
+    /* ── Quick actions ────────────────────────────────── */
+    .qa-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem}
+    .qa-btn{display:flex;flex-direction:column;align-items:center;gap:7px;padding:.85rem .5rem;background:var(--paper-3);border:1.5px solid var(--line);border-radius:10px;cursor:pointer;transition:all .15s;text-align:center}
+    .qa-btn:hover{border-color:var(--teal);background:var(--teal-tint)}
+    .qa-icon{width:34px;height:34px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px}
+    .qa-label{font-size:12px;font-weight:500;color:var(--ink)}
 
-    /* Dashboard body layout */
-    .db-body {
-      display: flex; flex: 1;
-    }
+    /* ── Transfer / quote ─────────────────────────────── */
+    .amount-prefix-wrap{position:relative}
+    .amount-prefix{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:14px;color:var(--muted);pointer-events:none}
+    .amount-prefix-wrap input{padding-left:28px}
+    .quote-box{background:var(--teal-tint);border:1px solid rgba(43,174,201,.25);border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:1rem}
+    .quote-row{display:flex;justify-content:space-between;font-size:13px;padding:4px 0}
+    .quote-val{font-family:var(--mono);font-weight:500}
 
-    /* Sidebar */
-    .db-sidebar {
-      width: 220px; flex-shrink: 0;
-      background: var(--navy);
-      display: flex; flex-direction: column;
-      padding: 24px 0;
-      min-height: calc(100vh - 61px);
-    }
-    .db-nav { flex: 1; display: flex; flex-direction: column; gap: 2px; padding: 0 12px; }
-    .db-nav-item {
-      display: flex; align-items: center; gap: 10px;
-      padding: 10px 14px; border-radius: 6px; cursor: pointer;
-      font-family: var(--sans); font-size: 13.5px; color: rgba(255,255,255,.6);
-      transition: background .15s, color .15s; border-left: 2px solid transparent;
-      user-select: none;
-    }
-    .db-nav-item:hover { background: rgba(255,255,255,.07); color: rgba(255,255,255,.9); }
-    .db-nav-item.active {
-      color: var(--teal); border-left-color: var(--teal);
-      background: rgba(43,174,201,.1);
-    }
-    .db-nav-icon { font-size: 15px; flex-shrink: 0; width: 20px; text-align: center; }
-    .db-nav-sep {
-      height: 1px; background: rgba(255,255,255,.1);
-      margin: 12px 12px; border-radius: 1px;
-    }
-    .db-signout {
-      padding: 0 12px; margin-top: 8px;
-    }
-    .db-signout-btn {
-      display: flex; align-items: center; gap: 10px;
-      padding: 10px 14px; border-radius: 6px; cursor: pointer;
-      font-family: var(--sans); font-size: 13px; color: rgba(255,255,255,.4);
-      transition: all .15s; width: 100%; background: none; border: none;
-    }
-    .db-signout-btn:hover { color: #ff8a80; background: rgba(255,100,80,.08); }
+    /* ── Card display ─────────────────────────────────── */
+    .vc{width:100%;max-width:340px;height:210px;border-radius:16px;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--navy) 0%,#1b3060 50%,#243a6e 100%);color:#fff;padding:1.5rem;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 8px 32px rgba(19,34,74,.35)}
+    .vc-chip{width:40px;height:30px;border-radius:4px;background:linear-gradient(135deg,#D4A843,#F0C85A);display:grid;grid-template-columns:1fr 1fr;gap:2px;padding:4px}
+    .vc-chip-cell{border-radius:1px;background:rgba(212,168,67,.6)}
+    .vc-num{font-family:var(--mono);font-size:16px;letter-spacing:.18em;opacity:.9}
+    .vc-row{display:flex;gap:2rem}
+    .vc-fl{font-family:var(--mono);font-size:8px;letter-spacing:.1em;opacity:.5;margin-bottom:2px}
+    .vc-fv{font-family:var(--mono);font-size:12px;opacity:.85}
+    .vc-logo{font-family:var(--serif);font-size:17px;font-weight:600;opacity:.9}
+    .vc-network{position:absolute;right:1.5rem;bottom:1.5rem;background:rgba(255,255,255,.15);padding:4px 10px;border-radius:4px;font-family:var(--mono);font-size:10px}
 
-    /* Main content */
-    .db-main {
-      flex: 1; padding: clamp(24px,3vw,40px) clamp(16px,3vw,36px);
-      background: var(--paper-2); overflow-x: hidden;
-    }
+    /* ── Liquidation ──────────────────────────────────── */
+    .la-item{padding:14px 0;border-bottom:1px solid var(--line)}
+    .la-item:last-child{border-bottom:none}
+    .la-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+    .la-details{display:flex;gap:1.25rem;font-size:12px;color:var(--muted);flex-wrap:wrap}
 
-    .db-section-title {
-      font-family: var(--serif); font-size: 28px; color: var(--navy);
-      letter-spacing: -.02em; margin-bottom: 4px;
-    }
-    .db-section-sub {
-      font-family: var(--mono); font-size: 10.5px; color: var(--muted);
-      letter-spacing: .1em; text-transform: uppercase; margin-bottom: 24px;
-    }
+    /* ── Settings ─────────────────────────────────────── */
+    .settings-section{margin-bottom:2rem}
+    .settings-section-title{font-family:var(--serif);font-size:1.15rem;font-weight:600;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--line)}
 
-    /* Top cards row */
-    .db-cards-row {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(min(260px,100%), 1fr));
-      gap: 16px; margin-bottom: 24px;
-    }
+    /* ── Skeleton ─────────────────────────────────────── */
+    .skel{background:linear-gradient(90deg,var(--paper-3) 25%,var(--line) 50%,var(--paper-3) 75%);background-size:200% 100%;animation:skel 1.4s ease infinite;border-radius:4px}
+    @keyframes skel{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
-    /* Balance card */
-    .db-balance-card {
-      background: linear-gradient(135deg, var(--navy) 0%, #1b3060 60%, #243a6e 100%);
-      border-radius: 12px; padding: 28px;
-      color: var(--paper); position: relative; overflow: hidden;
+    /* ── Responsive ───────────────────────────────────── */
+    @media(max-width:900px){
+      .auth-left{display:none}
+      .dash-sidebar{width:54px}
+      .nav-item span:not(.nav-item-icon){display:none}
+      .nav-section-label{display:none}
+      .dash-main{padding:1rem}
+      .qa-grid{grid-template-columns:repeat(2,1fr)}
+      .grid-2{grid-template-columns:1fr}
     }
-    .db-balance-card::after {
-      content: ""; position: absolute; right: -40px; top: -40px;
-      width: 180px; height: 180px;
-      border: 1px solid rgba(43,174,201,.15); border-radius: 50%;
-      pointer-events: none;
-    }
-    .db-balance-card::before {
-      content: ""; position: absolute; right: 20px; bottom: -30px;
-      width: 120px; height: 120px;
-      border: 1px solid rgba(43,174,201,.1); border-radius: 50%;
-      pointer-events: none;
-    }
-    .db-bal-label {
-      font-family: var(--mono); font-size: 9.5px; letter-spacing: .2em;
-      text-transform: uppercase; color: rgba(255,255,255,.45); margin-bottom: 10px;
-    }
-    .db-bal-amount {
-      font-family: var(--serif); font-size: 40px; color: #fff;
-      letter-spacing: -.03em; line-height: 1; font-weight: 500;
-      position: relative; z-index: 1;
-    }
-    .db-bal-cents { font-size: 22px; opacity: .6; }
-    .db-bal-gain {
-      font-family: var(--mono); font-size: 11px; color: #4ecb71;
-      margin-top: 10px; position: relative; z-index: 1;
-    }
-    .db-rate-row {
-      display: flex; gap: 12px; flex-wrap: wrap;
-      margin-top: 18px; padding-top: 18px;
-      border-top: 1px solid rgba(255,255,255,.1);
-      position: relative; z-index: 1;
-    }
-    .db-rate-item { display: flex; flex-direction: column; gap: 3px; }
-    .db-rate-flag {
-      width: 22px; height: 22px; border-radius: 50%;
-      background: rgba(255,255,255,.15); display: grid; place-items: center;
-      font-family: var(--mono); font-size: 7px; font-weight: 700;
-      color: rgba(255,255,255,.8); flex-shrink: 0;
-    }
-    .db-rate-lbl { font-family: var(--mono); font-size: 8.5px; color: rgba(255,255,255,.4); }
-    .db-rate-val { font-family: var(--mono); font-size: 10.5px; color: rgba(255,255,255,.8); font-weight: 500; }
-
-    /* Quick actions card */
-    .db-actions-card {
-      background: var(--paper); border: 1px solid var(--line);
-      border-radius: 12px; padding: 24px;
-    }
-    .db-actions-title {
-      font-family: var(--mono); font-size: 10px; letter-spacing: .16em;
-      text-transform: uppercase; color: var(--muted); margin-bottom: 16px;
-    }
-    .db-actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .db-action-btn {
-      display: flex; flex-direction: column; align-items: center; gap: 8px;
-      padding: 16px 12px; border-radius: 8px;
-      border: 1px solid var(--line); background: var(--paper-2);
-      cursor: pointer; transition: all .15s;
-    }
-    .db-action-btn:hover { border-color: var(--navy); background: var(--paper); transform: translateY(-1px); }
-    .db-action-icon {
-      width: 40px; height: 40px; border-radius: 10px;
-      background: var(--navy); color: var(--paper);
-      display: grid; place-items: center; font-size: 17px;
-    }
-    .db-action-label {
-      font-family: var(--mono); font-size: 9.5px; letter-spacing: .1em;
-      text-transform: uppercase; color: var(--ink);
-    }
-
-    /* Rate ticker bar */
-    .db-ticker {
-      background: var(--teal-tint);
-      border: 1px solid rgba(43,174,201,.2);
-      border-radius: 8px; padding: 10px 16px;
-      overflow: hidden; margin-bottom: 24px;
-    }
-    .db-ticker-inner {
-      display: flex; gap: 32px;
-      font-family: var(--mono); font-size: 11.5px; color: var(--teal-ink);
-      animation: ticker-scroll 18s linear infinite;
-      white-space: nowrap;
-    }
-    .db-ticker-item strong { color: var(--navy); }
-    @keyframes ticker-scroll {
-      0%   { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-
-    /* Transactions table */
-    .db-card {
-      background: var(--paper); border: 1px solid var(--line);
-      border-radius: 12px; overflow: hidden; margin-bottom: 24px;
-    }
-    .db-card-hd {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 20px 24px; border-bottom: 1px solid var(--line);
-    }
-    .db-card-hd-title {
-      font-family: var(--serif); font-size: 18px; color: var(--navy);
-      letter-spacing: -.01em;
-    }
-    .db-card-hd-link {
-      font-family: var(--mono); font-size: 10.5px; color: var(--teal-ink);
-      text-decoration: underline; text-underline-offset: 2px; cursor: pointer;
-    }
-    .db-tx-row {
-      display: flex; align-items: center; gap: 14px;
-      padding: 14px 24px; border-bottom: 1px solid var(--line);
-      transition: background .12s;
-    }
-    .db-tx-row:last-child { border-bottom: none; }
-    .db-tx-row:hover { background: var(--paper-2); }
-    .db-tx-flag {
-      width: 36px; height: 36px; border-radius: 50%;
-      background: var(--navy); color: #fff; flex-shrink: 0;
-      display: grid; place-items: center;
-      font-family: var(--mono); font-size: 9px; font-weight: 700;
-    }
-    .db-tx-info { flex: 1; min-width: 0; }
-    .db-tx-name {
-      font-size: 14px; color: var(--ink); font-weight: 500;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-    .db-tx-sub {
-      font-family: var(--mono); font-size: 10.5px; color: var(--muted); margin-top: 2px;
-    }
-    .db-tx-status {
-      font-family: var(--mono); font-size: 9.5px; font-weight: 600;
-      letter-spacing: .08em; text-transform: uppercase;
-      padding: 3px 8px; border-radius: 3px; flex-shrink: 0;
-    }
-    .db-tx-status.settled {
-      color: var(--good); background: rgba(46,142,92,.1);
-    }
-    .db-tx-status.pending {
-      color: #a0650a; background: rgba(240,160,50,.1);
-    }
-    .db-tx-amount {
-      font-family: var(--mono); font-size: 13px; font-weight: 600;
-      color: var(--ink); flex-shrink: 0; text-align: right;
-    }
-    .db-tx-amount.out { color: var(--ink); }
-    .db-tx-speed {
-      font-family: var(--mono); font-size: 9px; color: var(--muted);
-      text-align: right; margin-top: 2px;
-    }
-
-    /* Mini portfolio chart */
-    .db-chart-hd { padding: 20px 24px 0; }
-    .db-chart-stats {
-      display: flex; gap: 28px; padding: 12px 24px 0; flex-wrap: wrap;
-    }
-    .db-chart-stat { display: flex; flex-direction: column; gap: 2px; }
-    .db-chart-stat-lbl {
-      font-family: var(--mono); font-size: 9px; letter-spacing: .12em;
-      text-transform: uppercase; color: var(--muted);
-    }
-    .db-chart-stat-val {
-      font-family: var(--serif); font-size: 20px; color: var(--navy);
-      letter-spacing: -.01em;
-    }
-    .db-chart-up { color: #2a9d5c; font-family: var(--mono); font-size: 12px; }
-    .db-svg-chart { display: block; width: 100%; padding: 12px 24px 20px; }
-
-    /* Send money panel (shown when Transfer nav item clicked) */
-    .db-send-panel { display: none; }
-    .db-send-panel.active { display: block; }
-
-    .db-send-form { max-width: 520px; }
-    .db-send-form .field { margin-bottom: 20px; }
-    .db-send-row {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
-    }
-    .db-amount-row {
-      display: flex; align-items: center;
-      border: 1px solid var(--line); border-radius: 4px; overflow: hidden;
-      transition: border-color .15s, box-shadow .15s;
-    }
-    .db-amount-row:focus-within {
-      border-color: var(--teal); box-shadow: 0 0 0 3px rgba(43,174,201,.12);
-    }
-    .db-amount-prefix {
-      padding: 12px 14px; background: var(--paper-3);
-      font-family: var(--mono); font-size: 13px; color: var(--muted);
-      border-right: 1px solid var(--line); flex-shrink: 0;
-    }
-    .db-amount-row input {
-      flex: 1; border: none; padding: 12px 14px;
-      font-family: var(--sans); font-size: 14px; color: var(--ink);
-      background: transparent;
-    }
-    .db-amount-row input:focus { outline: none; }
-    select.field-select {
-      width: 100%; padding: 12px 14px;
-      border: 1px solid var(--line); border-radius: 4px;
-      font-family: var(--sans); font-size: 14px; color: var(--ink);
-      background: var(--paper); cursor: pointer;
-      -webkit-appearance: none; appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%236B6F7B' d='M8 10.5L3 5.5h10z'/%3E%3C/svg%3E");
-      background-repeat: no-repeat; background-position: right 12px center;
-      background-size: 16px;
-      transition: border-color .15s, box-shadow .15s;
-    }
-    select.field-select:focus {
-      outline: none; border-color: var(--teal);
-      box-shadow: 0 0 0 3px rgba(43,174,201,.12);
-    }
-    .db-quote-box {
-      background: var(--teal-tint); border: 1px solid rgba(43,174,201,.3);
-      border-radius: 8px; padding: 16px 18px; margin-bottom: 20px;
-      display: none;
-    }
-    .db-quote-box.show { display: flex; gap: 24px; flex-wrap: wrap; }
-    .db-quote-item { display: flex; flex-direction: column; gap: 2px; }
-    .db-quote-label { font-family: var(--mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--teal-ink); }
-    .db-quote-val { font-family: var(--serif); font-size: 18px; color: var(--navy); letter-spacing: -.01em; }
-
-    /* ── Responsive ──────────────────────────────────────────────── */
-    @media (max-width: 768px) {
-      #view-login { flex-direction: column; }
-      .login-left { width: 100%; min-height: unset; padding: 28px 24px; }
-      .login-hero-text { font-size: 26px; }
-      .login-left-body { margin-top: 24px; gap: 0; }
-      .login-features { flex-direction: row; flex-wrap: wrap; gap: 12px; }
-      .login-left-footer { display: none; }
-      .login-right { padding: 28px 24px; }
-
-      .db-sidebar { display: none; }
-      .db-main { padding: 18px 16px; }
-      .db-bal-amount { font-size: 30px; }
+    @media(max-width:600px){
+      .field-row{grid-template-columns:1fr}
+      .auth-box-title{font-size:1.5rem}
     }
   </style>
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════════════════════════════
-     VIEW: LOGIN
-══════════════════════════════════════════════════════════════════ -->
-<div id="view-login">
-
-  <!-- Left panel: branding + features -->
-  <div class="login-left">
+<!-- ══ VIEW: LOGIN ══════════════════════════════════════ -->
+<div id="view-login" class="auth-shell">
+  <div class="auth-left">
     <div class="brand-row">
-      <div class="bp-mark light">
-        <span class="ring"></span>
-        <span class="diamond-outer"></span>
-        <span class="diamond-inner"></span>
-        <span class="pip n"></span>
-        <span class="pip s"></span>
-        <span class="pip e"></span>
-        <span class="pip w"></span>
-      </div>
-      <div class="brand-stack">
-        <div class="brand-word light">Bay Pay</div>
-        <div class="brand-tagline light">Instant · Global · Crossborder</div>
-      </div>
+      <div class="bp-mark"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <div class="brand-word">Bay Pay</div>
     </div>
-
-    <div class="login-left-body">
-      <p class="login-hero-text">Move money across borders in <em>under two minutes.</em></p>
-
-      <div class="login-features">
-        <div class="login-feature">
-          <div class="login-feat-icon">$</div>
-          <div>
-            <div class="login-feat-title">Flat fee</div>
-            <div class="login-feat-val">$0.50 per transfer — no FX margin</div>
-          </div>
-        </div>
-        <div class="login-feature">
-          <div class="login-feat-icon">⚡</div>
-          <div>
-            <div class="login-feat-title">Speed</div>
-            <div class="login-feat-val">Average settlement in 1 min 47 sec</div>
-          </div>
-        </div>
-        <div class="login-feature">
-          <div class="login-feat-icon">↗</div>
-          <div>
-            <div class="login-feat-title">Corridors</div>
-            <div class="login-feat-val">Five Central Asian destinations</div>
-            <div class="login-corridors">
-              <span class="login-ctag">KZ</span>
-              <span class="login-ctag">UZ</span>
-              <span class="login-ctag">KG</span>
-              <span class="login-ctag">TJ</span>
-              <span class="login-ctag">TM</span>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div class="auth-tagline">Move money across borders in under two minutes.</div>
+    <div class="auth-features">
+      <div class="auth-feat"><div class="auth-feat-icon">💸</div><div>$0.50 flat fee — no FX margin, no surprises</div></div>
+      <div class="auth-feat"><div class="auth-feat-icon">⚡</div><div>Average settlement in 1 min 47 sec</div></div>
+      <div class="auth-feat"><div class="auth-feat-icon">🔒</div><div>Powered by Bridge.xyz — licensed &amp; regulated</div></div>
     </div>
-
-    <div class="login-left-footer">
-      New to Bay Pay? <a href="#" onclick="showSignup(event)">Create a free account →</a>
+    <div class="auth-corridors">
+      <span class="corr-tag">🇰🇿 KZ</span><span class="corr-tag">🇺🇿 UZ</span>
+      <span class="corr-tag">🇰🇬 KG</span><span class="corr-tag">🇹🇯 TJ</span><span class="corr-tag">🇹🇲 TM</span>
     </div>
+    <div class="auth-switch">New to Bay Pay? <a href="#" onclick="showView('signup');return false">Create an account →</a></div>
   </div>
-
-  <!-- Right panel: login form -->
-  <div class="login-right">
-    <div class="login-form-wrap">
-      <div class="brand-row" style="margin-bottom:40px">
-        <div class="bp-mark">
-          <span class="ring"></span>
-          <span class="diamond-outer"></span>
-          <span class="diamond-inner"></span>
-          <span class="pip n"></span>
-          <span class="pip s"></span>
-          <span class="pip e"></span>
-          <span class="pip w"></span>
+  <div class="auth-right">
+    <div class="auth-box">
+      <div class="auth-box-title">Welcome back.</div>
+      <div class="auth-box-sub">Sign in to your account</div>
+      <form id="loginForm">
+        <div class="field"><label for="loginEmail">Email address</label><input type="email" id="loginEmail" autocomplete="email" placeholder="you@example.com" required></div>
+        <div class="field"><label for="loginPw">Password</label>
+          <div class="pw-wrap"><input type="password" id="loginPw" autocomplete="current-password" placeholder="••••••••" required>
+          <button type="button" class="pw-toggle" onclick="togglePw('loginPw',this)">👁</button></div>
         </div>
-        <div class="brand-stack">
-          <div class="brand-word">Bay Pay</div>
-        </div>
-      </div>
-
-      <h1 class="login-title">Welcome back.</h1>
-      <p class="login-subtitle">Sign in to your account</p>
-
-      <form id="login-form" novalidate>
-        <div id="login-error" class="login-error">
-          Please enter a valid email and a password of at least 6 characters.
-        </div>
-
-        <div class="field">
-          <div class="field-row">
-            <label for="login-email">Email address</label>
-          </div>
-          <input type="email" id="login-email" name="email"
-            placeholder="you@example.com" autocomplete="email" required>
-        </div>
-
-        <div class="field">
-          <div class="field-row">
-            <label for="login-password">Password</label>
-            <a href="#" class="field-link" onclick="return false">Forgot password?</a>
-          </div>
-          <div class="field-pw-wrap">
-            <input type="password" id="login-password" name="password"
-              placeholder="••••••••" autocomplete="current-password" required>
-            <span class="field-pw-toggle" id="pw-toggle" onclick="togglePw()">👁</span>
-          </div>
-        </div>
-
-        <button type="submit" class="btn btn-primary btn-lg btn-arrow btn-full" style="margin-top:8px">
-          Sign in
-        </button>
+        <div id="loginError" hidden class="error-msg"></div>
+        <button type="submit" class="btn btn-primary btn-full btn-lg" id="loginBtn" style="margin-top:8px">Sign in →</button>
       </form>
-
-      <div class="login-divider">or</div>
-
-      <button class="btn btn-secondary btn-full btn-arrow" onclick="showSignup()">
-        Create a free account
-      </button>
-
-      <p class="login-footer-note" style="margin-top:28px">
-        <a href="index.html">← Back to baypaybank.com</a>
-      </p>
+      <div class="auth-divider">or</div>
+      <button class="btn btn-ghost btn-full" onclick="showView('signup')">Create a free account →</button>
+      <div class="auth-foot"><a href="index.html">← Back to baypaybank.com</a></div>
     </div>
   </div>
 </div>
 
-
-<!-- ══════════════════════════════════════════════════════════════════
-     VIEW: DASHBOARD
-══════════════════════════════════════════════════════════════════ -->
-<div id="view-dashboard">
-
-  <!-- Sticky topbar -->
-  <header class="db-topbar">
-    <div class="db-topbar-inner">
-      <div class="brand-row">
-        <div class="bp-mark">
-          <span class="ring"></span>
-          <span class="diamond-outer"></span>
-          <span class="diamond-inner"></span>
-          <span class="pip n"></span>
-          <span class="pip s"></span>
-          <span class="pip e"></span>
-          <span class="pip w"></span>
-        </div>
-        <div class="brand-stack">
-          <div class="brand-word">Bay Pay</div>
-        </div>
-      </div>
-      <div class="db-spacer"></div>
-      <div class="db-topbar-actions">
-        <button class="db-notif-btn" title="Notifications">🔔</button>
-        <div class="db-user-chip">
-          <div class="db-avatar" id="db-avatar-initials">A</div>
-          <span class="db-user-name" id="db-user-display">Account</span>
-        </div>
-        <button class="btn btn-ghost" onclick="signOut()" style="font-size:12px;padding:8px 14px">Sign out</button>
-      </div>
+<!-- ══ VIEW: SIGN UP ════════════════════════════════════ -->
+<div id="view-signup" class="auth-shell" hidden>
+  <div class="auth-left">
+    <div class="brand-row">
+      <div class="bp-mark"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <div class="brand-word">Bay Pay</div>
     </div>
+    <div class="auth-tagline">Your money, moving at the speed of the internet.</div>
+    <div class="auth-features">
+      <div class="auth-feat"><div class="auth-feat-icon">🌍</div><div>5 Central Asian corridors, 1 platform</div></div>
+      <div class="auth-feat"><div class="auth-feat-icon">🏦</div><div>Virtual US bank account included free</div></div>
+      <div class="auth-feat"><div class="auth-feat-icon">💳</div><div>Visa card for stablecoin spending</div></div>
+    </div>
+    <div class="auth-switch">Already have an account? <a href="#" onclick="showView('login');return false">Sign in →</a></div>
+  </div>
+  <div class="auth-right">
+    <div class="auth-box">
+      <div class="auth-box-title">Create account.</div>
+      <div class="auth-box-sub">It takes under two minutes</div>
+      <form id="signupForm">
+        <div class="field-row">
+          <div class="field"><label for="signupFirst">First name</label><input type="text" id="signupFirst" autocomplete="given-name" placeholder="Aisha" required></div>
+          <div class="field"><label for="signupLast">Last name</label><input type="text" id="signupLast" autocomplete="family-name" placeholder="Nurlanovna" required></div>
+        </div>
+        <div class="field"><label for="signupEmail">Email address</label><input type="email" id="signupEmail" autocomplete="email" placeholder="you@example.com" required></div>
+        <div class="field"><label for="signupPw">Password</label>
+          <div class="pw-wrap"><input type="password" id="signupPw" autocomplete="new-password" placeholder="Min 8 characters" required minlength="8">
+          <button type="button" class="pw-toggle" onclick="togglePw('signupPw',this)">👁</button></div>
+        </div>
+        <div class="field"><label for="signupPwC">Confirm password</label>
+          <div class="pw-wrap"><input type="password" id="signupPwC" autocomplete="new-password" placeholder="Repeat password" required minlength="8">
+          <button type="button" class="pw-toggle" onclick="togglePw('signupPwC',this)">👁</button></div>
+        </div>
+        <div id="signupError" hidden class="error-msg"></div>
+        <button type="submit" class="btn btn-teal btn-full btn-lg" id="signupBtn" style="margin-top:8px">Create account →</button>
+      </form>
+      <div class="auth-foot"><a href="#" onclick="showView('login');return false">Already have an account? Sign in</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ VIEW: KYC ════════════════════════════════════════ -->
+<div id="view-kyc" class="kyc-shell" hidden>
+  <div class="kyc-card">
+    <div style="font-size:3rem;margin-bottom:1rem">🪪</div>
+    <h2>Verify your identity</h2>
+    <p>Bridge requires a quick identity check before you can send money. It takes about 3 minutes and is handled securely by Bridge.xyz.</p>
+    <div class="kyc-step-row">
+      <div class="kyc-step"><div class="kyc-step-num">1</div>Upload a government-issued ID</div>
+      <div class="kyc-step"><div class="kyc-step-num">2</div>Take a short selfie</div>
+      <div class="kyc-step"><div class="kyc-step-num">3</div>Return here — we'll activate your account</div>
+    </div>
+    <a id="kycLink" href="#" target="_blank" class="btn btn-teal btn-full btn-lg" style="margin-bottom:12px">Start verification →</a>
+    <button class="btn btn-ghost btn-full" onclick="checkKycAndEnter()">I've completed verification</button>
+    <p style="font-size:12px;color:var(--muted);margin-top:14px">Bay Pay never sees your raw documents.</p>
+  </div>
+</div>
+
+<!-- ══ VIEW: DASHBOARD ══════════════════════════════════ -->
+<div id="view-dashboard" hidden>
+  <header class="dash-topbar">
+    <div class="brand-row">
+      <div class="bp-mark" style="width:26px;height:26px"><svg viewBox="0 0 24 24" style="width:14px;height:14px"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <div class="brand-word" style="font-size:18px;color:var(--ink)">Bay Pay</div>
+    </div>
+    <div class="topbar-spacer"></div>
+    <div class="topbar-user">
+      <div class="user-avatar" id="topbarInitials">BP</div>
+      <span id="topbarName">—</span>
+    </div>
+    <button class="btn btn-ghost btn-sm" onclick="signOut()">Sign out</button>
   </header>
 
-  <div class="db-body">
-
-    <!-- Sidebar -->
-    <aside class="db-sidebar">
-      <nav class="db-nav">
-        <div class="db-nav-item active" onclick="showPane('overview', this)">
-          <span class="db-nav-icon">◈</span> Overview
-        </div>
-        <div class="db-nav-item" onclick="showPane('transfer', this)">
-          <span class="db-nav-icon">↑</span> Send money
-        </div>
-        <div class="db-nav-item" onclick="showPane('cards', this)">
-          <span class="db-nav-icon">▣</span> Cards
-        </div>
-        <div class="db-nav-item" onclick="showPane('invest', this)">
-          <span class="db-nav-icon">↗</span> Invest
-        </div>
-        <div class="db-nav-item" onclick="showPane('history', this)">
-          <span class="db-nav-icon">☰</span> History
-        </div>
-        <div class="db-nav-sep"></div>
-        <div class="db-nav-item" onclick="showPane('settings', this)">
-          <span class="db-nav-icon">⚙</span> Settings
-        </div>
-      </nav>
-      <div class="db-signout">
-        <button class="db-signout-btn" onclick="signOut()">
-          <span>→</span> Sign out
-        </button>
+  <div class="dash-layout">
+    <nav class="dash-sidebar">
+      <div class="nav-section">
+        <div class="nav-section-label">Account</div>
+        <div class="nav-item active" data-pane="overview" onclick="switchPane('overview',this)"><span class="nav-item-icon">🏠</span><span>Overview</span></div>
+        <div class="nav-item" data-pane="transfer" onclick="switchPane('transfer',this)"><span class="nav-item-icon">💸</span><span>Send money</span></div>
+        <div class="nav-item" data-pane="virtual-accounts" onclick="switchPane('virtual-accounts',this)"><span class="nav-item-icon">🏦</span><span>Virtual accounts</span></div>
+        <div class="nav-item" data-pane="cards" onclick="switchPane('cards',this)"><span class="nav-item-icon">💳</span><span>Cards</span></div>
+        <div class="nav-item" data-pane="liquidation" onclick="switchPane('liquidation',this)"><span class="nav-item-icon">🔄</span><span>Liquidation</span></div>
       </div>
-    </aside>
+      <div class="nav-section">
+        <div class="nav-section-label">Activity</div>
+        <div class="nav-item" data-pane="history" onclick="switchPane('history',this)"><span class="nav-item-icon">📋</span><span>History</span></div>
+      </div>
+      <div class="nav-section nav-signout">
+        <div class="nav-divider"></div>
+        <div class="nav-item" data-pane="settings" onclick="switchPane('settings',this)"><span class="nav-item-icon">⚙️</span><span>Settings</span></div>
+        <div class="nav-item" onclick="signOut()"><span class="nav-item-icon">🚪</span><span>Sign out</span></div>
+      </div>
+    </nav>
 
-    <!-- Main content -->
-    <main class="db-main">
+    <main class="dash-main">
 
-      <!-- ── PANE: Overview ── -->
-      <div id="pane-overview">
-        <p class="db-section-title" id="db-greeting">Good morning.</p>
-        <p class="db-section-sub">Your account overview</p>
-
-        <!-- Balance + quick actions row -->
-        <div class="db-cards-row">
-
-          <div class="db-balance-card">
-            <div class="db-bal-label">Total Balance · USD</div>
-            <div class="db-bal-amount">$12,450<span class="db-bal-cents">.00</span></div>
-            <div class="db-bal-gain">▲ $320.00 received today</div>
-            <div class="db-rate-row">
-              <div class="db-rate-item">
-                <div class="db-rate-flag">KZ</div>
-                <div class="db-rate-lbl">KZT</div>
-                <div class="db-rate-val">₸489.20</div>
-              </div>
-              <div class="db-rate-item">
-                <div class="db-rate-flag">UZ</div>
-                <div class="db-rate-lbl">UZS</div>
-                <div class="db-rate-val">12,640</div>
-              </div>
-              <div class="db-rate-item">
-                <div class="db-rate-flag">KG</div>
-                <div class="db-rate-lbl">KGS</div>
-                <div class="db-rate-val">87.40</div>
-              </div>
-              <div class="db-rate-item">
-                <div class="db-rate-flag">TJ</div>
-                <div class="db-rate-lbl">TJS</div>
-                <div class="db-rate-val">10.85</div>
-              </div>
-            </div>
+      <!-- OVERVIEW -->
+      <div id="pane-overview" class="pane active">
+        <div class="pane-title">Overview</div>
+        <div class="pane-sub" id="overviewGreeting">Good morning</div>
+        <div id="kycAlertBanner" class="kyc-alert" hidden>
+          <span>⚠️ Complete identity verification to unlock transfers and your virtual account.</span>
+          <button class="btn btn-ghost btn-sm" onclick="openKycLink()">Verify now →</button>
+        </div>
+        <div class="grid-2" style="margin-bottom:1rem">
+          <div class="balance-card">
+            <div class="balance-label">Account holder</div>
+            <div class="balance-amount" id="overviewName" style="font-size:1.4rem">—</div>
+            <div class="balance-sub" id="overviewEmail">—</div>
+            <div class="balance-status" id="overviewKycBadge"><span class="dot"></span> <span>Checking…</span></div>
           </div>
-
-          <div class="db-actions-card">
-            <div class="db-actions-title">Quick actions</div>
-            <div class="db-actions-grid">
-              <button class="db-action-btn" onclick="showPane('transfer', document.querySelector('.db-nav-item:nth-child(2)'))">
-                <div class="db-action-icon">↑</div>
-                <div class="db-action-label">Send</div>
-              </button>
-              <button class="db-action-btn">
-                <div class="db-action-icon">↓</div>
-                <div class="db-action-label">Receive</div>
-              </button>
-              <button class="db-action-btn" onclick="showPane('cards', document.querySelector('.db-nav-item:nth-child(3)'))">
-                <div class="db-action-icon">▣</div>
-                <div class="db-action-label">Cards</div>
-              </button>
-              <button class="db-action-btn" onclick="showPane('invest', document.querySelector('.db-nav-item:nth-child(4)'))">
-                <div class="db-action-icon">↗</div>
-                <div class="db-action-label">Invest</div>
-              </button>
+          <div class="card">
+            <div class="card-title">Quick actions</div>
+            <div class="qa-grid">
+              <div class="qa-btn" onclick="switchPane('transfer',null)"><div class="qa-icon">💸</div><div class="qa-label">Send</div></div>
+              <div class="qa-btn" onclick="switchPane('virtual-accounts',null)"><div class="qa-icon">🏦</div><div class="qa-label">Deposit</div></div>
+              <div class="qa-btn" onclick="switchPane('cards',null)"><div class="qa-icon">💳</div><div class="qa-label">Cards</div></div>
+              <div class="qa-btn" onclick="switchPane('liquidation',null)"><div class="qa-icon">🔄</div><div class="qa-label">Off-ramp</div></div>
             </div>
           </div>
         </div>
-
-        <!-- Rate ticker -->
-        <div class="db-ticker">
-          <div class="db-ticker-inner">
-            <span class="db-ticker-item"><strong>KZT</strong> ₸489.20 / USD</span>
-            <span class="db-ticker-item"><strong>UZS</strong> 12,640 / USD</span>
-            <span class="db-ticker-item"><strong>KGS</strong> 87.40 / USD</span>
-            <span class="db-ticker-item"><strong>TJS</strong> 10.85 / USD</span>
-            <span class="db-ticker-item"><strong>TMT</strong> 3.50 / USD</span>
-            <span class="db-ticker-item"><strong>AAPL</strong> $192.40 ▲4.23%</span>
-            <span class="db-ticker-item"><strong>BTC</strong> $62,840 ▲8.14%</span>
-            <span class="db-ticker-item"><strong>NVDA</strong> $875.60 ▲6.81%</span>
-            <!-- duplicate for seamless loop -->
-            <span class="db-ticker-item"><strong>KZT</strong> ₸489.20 / USD</span>
-            <span class="db-ticker-item"><strong>UZS</strong> 12,640 / USD</span>
-            <span class="db-ticker-item"><strong>KGS</strong> 87.40 / USD</span>
-            <span class="db-ticker-item"><strong>TJS</strong> 10.85 / USD</span>
-            <span class="db-ticker-item"><strong>TMT</strong> 3.50 / USD</span>
-            <span class="db-ticker-item"><strong>AAPL</strong> $192.40 ▲4.23%</span>
-            <span class="db-ticker-item"><strong>BTC</strong> $62,840 ▲8.14%</span>
-            <span class="db-ticker-item"><strong>NVDA</strong> $875.60 ▲6.81%</span>
-          </div>
+        <div class="rate-ticker"><div class="rate-ticker-inner" id="rateTicker"><span>Loading rates…</span></div></div>
+        <div class="card" style="margin-bottom:1rem">
+          <div class="card-title">Your US deposit account</div>
+          <div id="overviewVA"><div class="skel" style="height:80px"></div></div>
         </div>
-
-        <!-- Recent transactions -->
-        <div class="db-card">
-          <div class="db-card-hd">
-            <span class="db-card-hd-title">Recent Transfers</span>
-            <span class="db-card-hd-link" onclick="showPane('history', document.querySelector('.db-nav-item:nth-child(5)'))">View all →</span>
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <div class="card-title" style="margin:0">Recent transfers</div>
+            <button class="btn btn-ghost btn-sm" onclick="switchPane('history',null)">View all</button>
           </div>
-
-          <div class="db-tx-row">
-            <div class="db-tx-flag">KZ</div>
-            <div class="db-tx-info">
-              <div class="db-tx-name">Almaty · Halyk Bank</div>
-              <div class="db-tx-sub">156,544 KZT received · May 2, 2026</div>
-            </div>
-            <div>
-              <div class="db-tx-status settled">Settled</div>
-              <div class="db-tx-speed">1m 47s</div>
-            </div>
-            <div>
-              <div class="db-tx-amount out">−$320.00</div>
-            </div>
-          </div>
-
-          <div class="db-tx-row">
-            <div class="db-tx-flag">UZ</div>
-            <div class="db-tx-info">
-              <div class="db-tx-name">Tashkent · Kapital Bank</div>
-              <div class="db-tx-sub">6,320,000 UZS received · May 1, 2026</div>
-            </div>
-            <div>
-              <div class="db-tx-status settled">Settled</div>
-              <div class="db-tx-speed">2m 03s</div>
-            </div>
-            <div>
-              <div class="db-tx-amount out">−$500.00</div>
-            </div>
-          </div>
-
-          <div class="db-tx-row">
-            <div class="db-tx-flag">KG</div>
-            <div class="db-tx-info">
-              <div class="db-tx-name">Bishkek · MBank</div>
-              <div class="db-tx-sub">21,850 KGS received · Apr 29, 2026</div>
-            </div>
-            <div>
-              <div class="db-tx-status settled">Settled</div>
-              <div class="db-tx-speed">1m 58s</div>
-            </div>
-            <div>
-              <div class="db-tx-amount out">−$250.00</div>
-            </div>
-          </div>
-
-          <div class="db-tx-row">
-            <div class="db-tx-flag">TJ</div>
-            <div class="db-tx-info">
-              <div class="db-tx-name">Dushanbe · Amonatbank</div>
-              <div class="db-tx-sub">1,085 TJS received · Apr 28, 2026</div>
-            </div>
-            <div>
-              <div class="db-tx-status pending">Pending</div>
-              <div class="db-tx-speed">—</div>
-            </div>
-            <div>
-              <div class="db-tx-amount out">−$100.00</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Mini portfolio chart -->
-        <div class="db-card">
-          <div class="db-card-hd">
-            <span class="db-card-hd-title">Invest Portfolio</span>
-            <span class="db-card-hd-link" onclick="showPane('invest', document.querySelector('.db-nav-item:nth-child(4)'))">Open →</span>
-          </div>
-          <div class="db-chart-stats">
-            <div class="db-chart-stat">
-              <span class="db-chart-stat-lbl">Portfolio value</span>
-              <span class="db-chart-stat-val">$24,830.50</span>
-            </div>
-            <div class="db-chart-stat">
-              <span class="db-chart-stat-lbl">Today</span>
-              <span class="db-chart-up">▲ +$1,247.30 &nbsp;+5.29%</span>
-            </div>
-            <div class="db-chart-stat">
-              <span class="db-chart-stat-lbl">All-time return</span>
-              <span class="db-chart-up">+24.1%</span>
-            </div>
-          </div>
-          <svg class="db-svg-chart" viewBox="0 0 560 100" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="db-grad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#2BAEC9" stop-opacity=".18"/>
-                <stop offset="100%" stop-color="#2BAEC9" stop-opacity=".01"/>
-              </linearGradient>
-            </defs>
-            <line x1="0" y1="25" x2="560" y2="25" stroke="#E6E5E2" stroke-width="1"/>
-            <line x1="0" y1="55" x2="560" y2="55" stroke="#E6E5E2" stroke-width="1"/>
-            <line x1="0" y1="85" x2="560" y2="85" stroke="#E6E5E2" stroke-width="1"/>
-            <path d="M0,82 C60,75 100,65 160,54 S220,60 280,48 S340,32 400,24 S460,18 520,10 L520,90 L0,90 Z" fill="url(#db-grad)"/>
-            <path d="M0,82 C60,75 100,65 160,54 S220,60 280,48 S340,32 400,24 S460,18 520,10" stroke="#2BAEC9" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="520" cy="10" r="3" fill="#2BAEC9" class="chart-live-dot"/>
-            <circle cx="520" cy="10" r="7" fill="#2BAEC9" opacity=".12"/>
-            <text x="20"  y="98" text-anchor="middle" font-family="monospace" font-size="8" fill="#8A8E97">Mon</text>
-            <text x="100" y="98" text-anchor="middle" font-family="monospace" font-size="8" fill="#8A8E97">Tue</text>
-            <text x="190" y="98" text-anchor="middle" font-family="monospace" font-size="8" fill="#8A8E97">Wed</text>
-            <text x="280" y="98" text-anchor="middle" font-family="monospace" font-size="8" fill="#8A8E97">Thu</text>
-            <text x="370" y="98" text-anchor="middle" font-family="monospace" font-size="8" fill="#8A8E97">Fri</text>
-            <text x="460" y="98" text-anchor="middle" font-family="monospace" font-size="8" fill="#8A8E97">Sat</text>
-            <text x="520" y="98" text-anchor="middle" font-family="monospace" font-size="8" fill="#2BAEC9" font-weight="600">Sun</text>
-          </svg>
+          <div id="overviewTransfers"><div class="skel" style="height:100px"></div></div>
         </div>
       </div>
 
-      <!-- ── PANE: Send Money ── -->
-      <div id="pane-transfer" style="display:none">
-        <p class="db-section-title">Send money</p>
-        <p class="db-section-sub">Mid-market rate · $0.50 flat fee</p>
-
-        <div class="db-card" style="max-width:600px">
-          <div class="db-card-hd">
-            <span class="db-card-hd-title">New transfer</span>
+      <!-- TRANSFER -->
+      <div id="pane-transfer" class="pane">
+        <div class="pane-title">Send money</div>
+        <div class="pane-sub">International wire via stablecoin rails</div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">Transfer details</div>
+            <div class="field"><label>Amount (USD)</label>
+              <div class="amount-prefix-wrap"><span class="amount-prefix">$</span><input type="number" id="txAmount" min="10" max="50000" placeholder="100.00" oninput="calcLiveQuote()"></div>
+            </div>
+            <div class="field"><label>Destination</label>
+              <select id="txCorridor" onchange="calcLiveQuote()">
+                <option value="">— Select corridor —</option>
+                <option value="KZ">🇰🇿 Kazakhstan (KZT)</option>
+                <option value="UZ">🇺🇿 Uzbekistan (UZS)</option>
+                <option value="KG">🇰🇬 Kyrgyzstan (KGS)</option>
+                <option value="TJ">🇹🇯 Tajikistan (TJS)</option>
+                <option value="TM">🇹🇲 Turkmenistan (TMT)</option>
+              </select>
+            </div>
+            <div class="field"><label>Recipient full name</label><input type="text" id="txRecipient" placeholder="Legal name"></div>
+            <div class="field"><label>Recipient bank account / IBAN</label><input type="text" id="txIban" placeholder="KZ12345…"></div>
+            <div id="txQuoteBox" class="quote-box" hidden>
+              <div class="quote-row"><span>Exchange rate</span><span class="quote-val" id="qRate">—</span></div>
+              <div class="quote-row"><span>Recipient gets</span><span class="quote-val" id="qReceives">—</span></div>
+              <div class="quote-row"><span>Bay Pay fee</span><span class="quote-val" style="color:var(--good)">$0.50</span></div>
+              <div class="quote-row"><span>Settlement time</span><span class="quote-val" style="color:var(--good)">~2 min</span></div>
+            </div>
+            <div id="txError" hidden class="error-msg"></div>
+            <div id="txSuccess" hidden class="success-msg"></div>
+            <button class="btn btn-teal btn-full btn-lg" id="txBtn" onclick="submitTransfer()" style="margin-top:8px">Send →</button>
           </div>
-          <div style="padding:24px">
-            <div class="db-send-form">
-              <div class="field">
-                <div class="field-row"><label>You send</label></div>
-                <div class="db-amount-row">
-                  <div class="db-amount-prefix">USD $</div>
-                  <input type="number" id="send-amount" placeholder="0.00" min="1" oninput="calcQuote()">
-                </div>
+          <div>
+            <div class="card" style="margin-bottom:1rem">
+              <div class="card-title">Live rates</div>
+              <div id="liveRates"><div class="skel" style="height:90px"></div></div>
+            </div>
+            <div class="card">
+              <div class="card-title">Transfer limits</div>
+              <div style="font-size:13px;color:var(--muted);line-height:1.8">
+                <div>Min per transfer: <span class="mono">$10.00</span></div>
+                <div>Max per transfer: <span class="mono">$5,000</span></div>
+                <div>Monthly limit: <span class="mono">$50,000</span></div>
+                <div style="color:var(--warn);margin-top:6px">KYC verification required</div>
               </div>
-              <div class="field">
-                <div class="field-row"><label>Destination</label></div>
-                <select class="field-select" id="send-corridor" onchange="calcQuote()">
-                  <option value="">Select country</option>
-                  <option value="KZ">Kazakhstan (KZT) — ₸489.20 / USD</option>
-                  <option value="UZ">Uzbekistan (UZS) — 12,640 / USD</option>
-                  <option value="KG">Kyrgyzstan (KGS) — 87.40 / USD</option>
-                  <option value="TJ">Tajikistan (TJS) — 10.85 / USD</option>
-                  <option value="TM">Turkmenistan (TMT) — 3.50 / USD</option>
-                </select>
-              </div>
-              <div class="db-quote-box" id="send-quote">
-                <div class="db-quote-item">
-                  <span class="db-quote-label">They receive</span>
-                  <span class="db-quote-val" id="q-receive">—</span>
-                </div>
-                <div class="db-quote-item">
-                  <span class="db-quote-label">Rate</span>
-                  <span class="db-quote-val" id="q-rate">—</span>
-                </div>
-                <div class="db-quote-item">
-                  <span class="db-quote-label">Fee</span>
-                  <span class="db-quote-val">$0.50</span>
-                </div>
-                <div class="db-quote-item">
-                  <span class="db-quote-label">Est. time</span>
-                  <span class="db-quote-val">~1m 47s</span>
-                </div>
-              </div>
-              <div class="field">
-                <div class="field-row"><label>Recipient name</label></div>
-                <input type="text" placeholder="Full name as on their bank account">
-              </div>
-              <div class="field">
-                <div class="field-row"><label>Bank account / IBAN</label></div>
-                <input type="text" placeholder="KZ89 1234 5678 9012 3456">
-              </div>
-              <button class="btn btn-primary btn-lg btn-arrow btn-full" onclick="confirmSend()">
-                Review transfer
-              </button>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- ── PANE: Cards ── -->
-      <div id="pane-cards" style="display:none">
-        <p class="db-section-title">Your Cards</p>
-        <p class="db-section-sub">Virtual and physical · No FX markup</p>
+      <!-- VIRTUAL ACCOUNTS -->
+      <div id="pane-virtual-accounts" class="pane">
+        <div class="pane-title">Virtual accounts</div>
+        <div class="pane-sub">Receive USD, EUR and more via local bank rails</div>
+        <div style="display:flex;justify-content:flex-end;margin-bottom:1rem">
+          <button class="btn btn-primary btn-sm" onclick="openCreateVAModal()">+ New virtual account</button>
+        </div>
+        <div id="vaList"><div class="skel" style="height:200px"></div></div>
+      </div>
 
-        <div class="db-cards-row" style="max-width:700px">
-          <div class="db-card" style="overflow:hidden">
-            <div style="background:linear-gradient(135deg,#13224A 0%,#1b3060 60%,#243a6e 100%);padding:28px;aspect-ratio:1.586;position:relative;overflow:hidden;border-radius:0">
-              <div style="position:absolute;right:-30px;top:-30px;width:120px;height:120px;border:1px solid rgba(43,174,201,.2);border-radius:50%"></div>
-              <div style="font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:10px">Bay Pay Virtual</div>
-              <div style="font-family:var(--serif);font-size:18px;color:#fff;letter-spacing:.05em;margin-bottom:auto">•••• •••• •••• 4291</div>
-              <div style="position:absolute;bottom:24px;left:28px;right:28px;display:flex;justify-content:space-between;align-items:flex-end">
-                <div>
-                  <div style="font-family:var(--mono);font-size:8px;color:rgba(255,255,255,.4);letter-spacing:.12em;text-transform:uppercase;margin-bottom:3px">Card Holder</div>
-                  <div style="font-family:var(--serif);font-size:14px;color:#fff" id="card-holder-name">A. Nurlanovna</div>
-                </div>
-                <div>
-                  <div style="font-family:var(--mono);font-size:8px;color:rgba(255,255,255,.4);letter-spacing:.12em;text-transform:uppercase;margin-bottom:3px">Expires</div>
-                  <div style="font-family:var(--serif);font-size:14px;color:#fff">09 / 28</div>
-                </div>
-                <svg viewBox="0 0 50 32" width="40" fill="none">
-                  <circle cx="19" cy="16" r="14" fill="rgba(255,255,255,.28)"/>
-                  <circle cx="31" cy="16" r="14" fill="rgba(255,255,255,.14)"/>
-                </svg>
-              </div>
-            </div>
-            <div style="padding:20px 24px;border-top:1px solid var(--line);display:flex;gap:10px">
-              <button class="btn btn-secondary" style="flex:1">Freeze card</button>
-              <button class="btn btn-primary" style="flex:1">Card details</button>
-            </div>
-          </div>
+      <!-- CARDS -->
+      <div id="pane-cards" class="pane">
+        <div class="pane-title">Cards</div>
+        <div class="pane-sub">Spend stablecoins anywhere Visa is accepted</div>
+        <div id="cardsList"><div class="skel" style="height:220px"></div></div>
+      </div>
 
-          <div style="display:flex;flex-direction:column;gap:12px">
-            <div class="db-card" style="padding:20px 24px">
-              <div style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">This month</div>
-              <div style="font-family:var(--serif);font-size:28px;color:var(--navy);letter-spacing:-.02em">$1,240.00</div>
-              <div style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:4px">across 18 transactions</div>
-            </div>
-            <div class="db-card" style="padding:20px 24px">
-              <div style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Card status</div>
-              <div style="display:flex;align-items:center;gap:8px">
-                <div style="width:8px;height:8px;border-radius:50%;background:var(--good)"></div>
-                <span style="font-family:var(--mono);font-size:12px;color:var(--ink)">Active · Tap to pay enabled</span>
-              </div>
-            </div>
-            <button class="btn btn-primary btn-arrow" style="width:100%;justify-content:center">
-              Request physical card
-            </button>
+      <!-- LIQUIDATION -->
+      <div id="pane-liquidation" class="pane">
+        <div class="pane-title">Liquidation addresses</div>
+        <div class="pane-sub">Auto-convert incoming crypto to fiat</div>
+        <div style="display:flex;justify-content:flex-end;margin-bottom:1rem">
+          <button class="btn btn-primary btn-sm" onclick="openCreateLAModal()">+ New address</button>
+        </div>
+        <div class="card" style="margin-bottom:1rem">
+          <p style="font-size:13px;color:var(--muted);line-height:1.7">A liquidation address is a crypto wallet that automatically forwards incoming stablecoin deposits to your chosen fiat bank account (ACH, SEPA, wire, etc.). Share it with anyone to receive auto-converted payments.</p>
+        </div>
+        <div id="laList"><div class="skel" style="height:160px"></div></div>
+      </div>
+
+      <!-- HISTORY -->
+      <div id="pane-history" class="pane">
+        <div class="pane-title">Transaction history</div>
+        <div class="pane-sub">All transfers</div>
+        <div class="card">
+          <div id="historyTable"><div class="skel" style="height:240px"></div></div>
+          <div style="display:flex;justify-content:center;margin-top:1rem;gap:.5rem">
+            <button class="btn btn-ghost btn-sm" id="histPrevBtn" onclick="loadHistory('prev')" hidden>← Previous</button>
+            <button class="btn btn-ghost btn-sm" id="histNextBtn" onclick="loadHistory('next')" hidden>Next →</button>
           </div>
         </div>
       </div>
 
-      <!-- ── PANE: Invest ── -->
-      <div id="pane-invest" style="display:none">
-        <p class="db-section-title">Invest</p>
-        <p class="db-section-sub">Powered by Alpaca Broker API</p>
-
-        <div class="db-cards-row">
-          <div class="db-balance-card">
-            <div class="db-bal-label">Portfolio Value</div>
-            <div class="db-bal-amount">$24,830<span class="db-bal-cents">.50</span></div>
-            <div class="db-bal-gain">▲ +$1,247.30 &nbsp;+5.29% today</div>
+      <!-- SETTINGS -->
+      <div id="pane-settings" class="pane">
+        <div class="pane-title">Settings</div>
+        <div class="pane-sub">Account &amp; security</div>
+        <div class="settings-section">
+          <div class="settings-section-title">Personal information</div>
+          <div class="card">
+            <div class="field-row">
+              <div class="field"><label>First name</label><input type="text" id="setFirst"></div>
+              <div class="field"><label>Last name</label><input type="text" id="setLast"></div>
+            </div>
+            <div class="field"><label>Email address</label><input type="email" id="setEmail"></div>
+            <div id="settingsMsg" hidden class="success-msg"></div>
+            <div id="settingsErr" hidden class="error-msg"></div>
+            <button class="btn btn-primary" onclick="saveProfile()">Save changes</button>
           </div>
-          <div class="db-actions-card">
-            <div class="db-actions-title">Trade</div>
-            <div class="db-actions-grid">
-              <button class="db-action-btn">
-                <div class="db-action-icon">↑</div>
-                <div class="db-action-label">Buy</div>
-              </button>
-              <button class="db-action-btn">
-                <div class="db-action-icon">↓</div>
-                <div class="db-action-label">Sell</div>
-              </button>
+        </div>
+        <div class="settings-section">
+          <div class="settings-section-title">Identity &amp; KYC</div>
+          <div class="card">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+              <div><div style="font-weight:500;margin-bottom:6px">Verification status</div><div id="settingsKycStatus" class="badge badge-pending"><span class="dot"></span> Checking…</div></div>
+              <button class="btn btn-ghost btn-sm" onclick="openKycLink()">Re-verify →</button>
             </div>
           </div>
         </div>
-
-        <div class="db-card">
-          <div class="db-card-hd"><span class="db-card-hd-title">Holdings</span></div>
-          <div class="db-tx-row">
-            <div class="db-tx-flag" style="background:#555">A</div>
-            <div class="db-tx-info"><div class="db-tx-name">Apple Inc. — AAPL</div><div class="db-tx-sub">5.2 shares · avg $178.40</div></div>
-            <div><div class="db-tx-status settled">+4.23%</div></div>
-            <div><div class="db-tx-amount">$999.48</div></div>
-          </div>
-          <div class="db-tx-row">
-            <div class="db-tx-flag" style="background:#76b900">N</div>
-            <div class="db-tx-info"><div class="db-tx-name">NVIDIA Corp — NVDA</div><div class="db-tx-sub">1.8 shares · avg $780.00</div></div>
-            <div><div class="db-tx-status settled">+6.81%</div></div>
-            <div><div class="db-tx-amount">$1,576.08</div></div>
-          </div>
-          <div class="db-tx-row">
-            <div class="db-tx-flag" style="background:#F7931A">₿</div>
-            <div class="db-tx-info"><div class="db-tx-name">Bitcoin — BTC</div><div class="db-tx-sub">0.34 BTC · avg $48,200</div></div>
-            <div><div class="db-tx-status settled">+8.14%</div></div>
-            <div><div class="db-tx-amount">$21,365.60</div></div>
-          </div>
+        <div class="settings-section">
+          <div class="settings-section-title">Linked bank accounts</div>
+          <div class="card" id="externalAccounts"><div class="skel" style="height:80px"></div></div>
         </div>
-      </div>
-
-      <!-- ── PANE: History ── -->
-      <div id="pane-history" style="display:none">
-        <p class="db-section-title">Transfer History</p>
-        <p class="db-section-sub">All transfers · Last 30 days</p>
-
-        <div class="db-card">
-          <div class="db-card-hd"><span class="db-card-hd-title">All transfers</span></div>
-          <div class="db-tx-row">
-            <div class="db-tx-flag">KZ</div>
-            <div class="db-tx-info"><div class="db-tx-name">Almaty · Halyk Bank</div><div class="db-tx-sub">156,544 KZT · May 2, 2026 · 14:22</div></div>
-            <div><div class="db-tx-status settled">Settled</div><div class="db-tx-speed">1m 47s</div></div>
-            <div><div class="db-tx-amount">−$320.00</div></div>
-          </div>
-          <div class="db-tx-row">
-            <div class="db-tx-flag">UZ</div>
-            <div class="db-tx-info"><div class="db-tx-name">Tashkent · Kapital Bank</div><div class="db-tx-sub">6,320,000 UZS · May 1, 2026 · 09:15</div></div>
-            <div><div class="db-tx-status settled">Settled</div><div class="db-tx-speed">2m 03s</div></div>
-            <div><div class="db-tx-amount">−$500.00</div></div>
-          </div>
-          <div class="db-tx-row">
-            <div class="db-tx-flag">KG</div>
-            <div class="db-tx-info"><div class="db-tx-name">Bishkek · MBank</div><div class="db-tx-sub">21,850 KGS · Apr 29, 2026 · 16:44</div></div>
-            <div><div class="db-tx-status settled">Settled</div><div class="db-tx-speed">1m 58s</div></div>
-            <div><div class="db-tx-amount">−$250.00</div></div>
-          </div>
-          <div class="db-tx-row">
-            <div class="db-tx-flag">TJ</div>
-            <div class="db-tx-info"><div class="db-tx-name">Dushanbe · Amonatbank</div><div class="db-tx-sub">1,085 TJS · Apr 28, 2026 · 11:30</div></div>
-            <div><div class="db-tx-status pending">Pending</div><div class="db-tx-speed">—</div></div>
-            <div><div class="db-tx-amount">−$100.00</div></div>
-          </div>
-          <div class="db-tx-row">
-            <div class="db-tx-flag">KZ</div>
-            <div class="db-tx-info"><div class="db-tx-name">Almaty · Kaspi Bank</div><div class="db-tx-sub">244,600 KZT · Apr 25, 2026 · 18:02</div></div>
-            <div><div class="db-tx-status settled">Settled</div><div class="db-tx-speed">1m 32s</div></div>
-            <div><div class="db-tx-amount">−$500.00</div></div>
-          </div>
-          <div class="db-tx-row">
-            <div class="db-tx-flag">TM</div>
-            <div class="db-tx-info"><div class="db-tx-name">Ashgabat · Senagat Bank</div><div class="db-tx-sub">175 TMT · Apr 22, 2026 · 10:11</div></div>
-            <div><div class="db-tx-status settled">Settled</div><div class="db-tx-speed">2m 14s</div></div>
-            <div><div class="db-tx-amount">−$50.00</div></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ── PANE: Settings ── -->
-      <div id="pane-settings" style="display:none">
-        <p class="db-section-title">Settings</p>
-        <p class="db-section-sub">Account preferences</p>
-
-        <div class="db-card" style="max-width:560px">
-          <div class="db-card-hd"><span class="db-card-hd-title">Personal information</span></div>
-          <div style="padding:24px;display:flex;flex-direction:column;gap:18px">
-            <div class="field">
-              <div class="field-row"><label>Full name</label></div>
-              <input type="text" value="A. Nurlanovna" id="settings-name">
-            </div>
-            <div class="field">
-              <div class="field-row"><label>Email</label></div>
-              <input type="email" id="settings-email" value="">
-            </div>
-            <div class="field">
-              <div class="field-row"><label>Phone number</label></div>
-              <input type="tel" placeholder="+1 (555) 000-0000">
-            </div>
-            <button class="btn btn-primary btn-arrow">Save changes</button>
-          </div>
-        </div>
-
-        <div class="db-card" style="max-width:560px;margin-top:16px">
-          <div class="db-card-hd"><span class="db-card-hd-title">Security</span></div>
-          <div style="padding:24px;display:flex;flex-direction:column;gap:12px">
-            <button class="btn btn-secondary">Change password</button>
-            <button class="btn btn-secondary">Enable two-factor authentication</button>
-            <div style="border-top:1px solid var(--line);padding-top:12px;margin-top:4px">
-              <button class="btn" style="color:var(--danger);background:rgba(192,57,43,.07);border:1px solid rgba(192,57,43,.2)" onclick="signOut()">Sign out of all devices</button>
-            </div>
-          </div>
+        <div class="settings-section">
+          <div class="settings-section-title">Danger zone</div>
+          <div class="card"><button class="btn btn-danger" onclick="signOut()">Sign out of all sessions</button></div>
         </div>
       </div>
 
@@ -1286,126 +524,395 @@
   </div>
 </div>
 
+<!-- MODAL -->
+<div id="modalBackdrop" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center;padding:1rem">
+  <div id="modalBox" style="background:var(--paper);border-radius:12px;padding:2rem;width:100%;max-width:440px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+    <button onclick="closeModal()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted)">✕</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
 <script>
-  // ── Utilities ─────────────────────────────────────────────────────────
-  const $ = id => document.getElementById(id)
+/* ── CONFIG ── Set this after AWS API Gateway deploy ────── */
+const API = 'https://REPLACE_WITH_YOUR_API_GATEWAY_URL';
 
-  function togglePw() {
-    const inp = $('login-password')
-    inp.type = inp.type === 'password' ? 'text' : 'password'
-  }
+/* Central Asia FX rates (USD basis; Bridge doesn't cover these corridors directly) */
+const CA_RATES = {
+  KZ:{code:'KZT',sym:'₸',rate:489.20},
+  UZ:{code:'UZS',sym:"so'm",rate:12640},
+  KG:{code:'KGS',sym:'с',rate:87.40},
+  TJ:{code:'TJS',sym:'SM',rate:10.85},
+  TM:{code:'TMT',sym:'T',rate:3.50}
+};
 
-  // ── Login flow ────────────────────────────────────────────────────────
-  function showSignup(e) {
-    if (e) e.preventDefault()
-    alert('Account creation coming soon! For now, any email + 6-character password will sign you in.')
-  }
+let currentUser = null;
+let histAfter = null;
 
-  $('login-form').addEventListener('submit', function(e) {
-    e.preventDefault()
-    const email = $('login-email').value.trim()
-    const pass  = $('login-password').value
-    const errEl = $('login-error')
+/* ── API helpers ─────────────────────────────────────── */
+async function apiCall(path, opts={}) {
+  const res = await fetch(`${API}${path}`, { headers:{'Content-Type':'application/json',...(opts.headers||{})}, ...opts });
+  const data = await res.json().catch(()=>({}));
+  if (!res.ok) throw Object.assign(new Error(data.error||'Request failed'),{status:res.status});
+  return data;
+}
+async function bridge(path, opts={}) { return apiCall(`/bridge${path}`, opts); }
 
-    if (!email.includes('@') || pass.length < 6) {
-      errEl.classList.add('show')
-      return
+/* ── View helpers ────────────────────────────────────── */
+function showView(name) {
+  ['login','signup','kyc','dashboard'].forEach(v => {
+    document.getElementById(`view-${v}`).hidden = (v !== name);
+  });
+}
+function togglePw(id, btn) {
+  const el = document.getElementById(id);
+  el.type = el.type==='password'?'text':'password';
+  btn.textContent = el.type==='password'?'👁':'🙈';
+}
+function setLoading(btn, on) {
+  btn.disabled = on;
+  if (!btn._orig) btn._orig = btn.innerHTML;
+  btn.innerHTML = on ? '<span class="spin"></span>' : btn._orig;
+}
+function showErr(id, msg) { const e=document.getElementById(id); e.hidden=false; e.textContent=msg; }
+function hideMsg(id) { document.getElementById(id).hidden=true; }
+function fmtDate(iso) { try { return new Date(iso).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); } catch { return iso||'—'; } }
+
+/* ── LOGIN ───────────────────────────────────────────── */
+document.getElementById('loginForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = document.getElementById('loginBtn');
+  hideMsg('loginError'); setLoading(btn,true);
+  try {
+    const user = await apiCall('/auth/login',{method:'POST',body:JSON.stringify({email:document.getElementById('loginEmail').value.trim(),password:document.getElementById('loginPw').value})});
+    currentUser = user;
+    sessionStorage.setItem('bp_user', JSON.stringify(user));
+    enterDashboard();
+  } catch(err) { showErr('loginError', err.message); }
+  finally { setLoading(btn,false); }
+});
+
+/* ── SIGNUP ──────────────────────────────────────────── */
+document.getElementById('signupForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = document.getElementById('signupBtn');
+  hideMsg('signupError');
+  const pw = document.getElementById('signupPw').value;
+  if (pw !== document.getElementById('signupPwC').value) { showErr('signupError','Passwords do not match'); return; }
+  setLoading(btn,true);
+  try {
+    const result = await apiCall('/auth/signup',{method:'POST',body:JSON.stringify({first_name:document.getElementById('signupFirst').value.trim(),last_name:document.getElementById('signupLast').value.trim(),email:document.getElementById('signupEmail').value.trim(),password:pw})});
+    currentUser = {customer_id:result.customer_id,first_name:result.first_name,last_name:result.last_name,email:document.getElementById('signupEmail').value.trim(),kyc_status:result.kyc_status};
+    sessionStorage.setItem('bp_user', JSON.stringify(currentUser));
+    if (result.kyc_link_url) { document.getElementById('kycLink').href = result.kyc_link_url; showView('kyc'); }
+    else { enterDashboard(); }
+  } catch(err) { showErr('signupError', err.message); }
+  finally { setLoading(btn,false); }
+});
+
+/* ── KYC ─────────────────────────────────────────────── */
+async function openKycLink() {
+  try { const d = await bridge(`/customers/${currentUser.customer_id}/kyc-link`); const url=d.kyc_link||d.url; if(url) window.open(url,'_blank'); }
+  catch { alert('Could not fetch KYC link. Please try again.'); }
+}
+async function checkKycAndEnter() {
+  try { const c = await bridge(`/customers/${currentUser.customer_id}`); currentUser.kyc_status=c.status; sessionStorage.setItem('bp_user',JSON.stringify(currentUser)); } catch {}
+  enterDashboard();
+}
+
+/* ── DASHBOARD entry ─────────────────────────────────── */
+function enterDashboard() {
+  showView('dashboard');
+  const initials = ((currentUser.first_name||'B')[0]+(currentUser.last_name||'P')[0]).toUpperCase();
+  document.getElementById('topbarInitials').textContent = initials;
+  document.getElementById('topbarName').textContent = `${currentUser.first_name} ${currentUser.last_name}`;
+  const h = new Date().getHours();
+  document.getElementById('overviewGreeting').textContent = `${h<12?'Good morning':h<18?'Good afternoon':'Good evening'}, ${currentUser.first_name}`;
+  document.getElementById('overviewName').textContent = `${currentUser.first_name} ${currentUser.last_name}`;
+  document.getElementById('overviewEmail').textContent = currentUser.email;
+  loadOverview();
+}
+
+function signOut() { sessionStorage.removeItem('bp_user'); currentUser=null; showView('login'); }
+
+/* ── PANE switching ──────────────────────────────────── */
+function switchPane(name, el) {
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
+  document.getElementById(`pane-${name}`).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  (el || document.querySelector(`[data-pane="${name}"]`))?.classList.add('active');
+  if (name==='virtual-accounts') loadVA();
+  else if (name==='cards') loadCards();
+  else if (name==='liquidation') loadLA();
+  else if (name==='history') loadHistory('init');
+  else if (name==='settings') loadSettings();
+  else if (name==='transfer') loadRates();
+}
+
+/* ═══════════════════════════════════════════════════════
+   OVERVIEW
+═══════════════════════════════════════════════════════ */
+async function loadOverview() {
+  const cid = currentUser.customer_id;
+  const [custR, vaR, txR] = await Promise.allSettled([
+    bridge(`/customers/${cid}`),
+    bridge(`/customers/${cid}/virtual_accounts?limit=1`),
+    bridge(`/customers/${cid}/transfers?limit=5`)
+  ]);
+  if (custR.status==='fulfilled') { currentUser.kyc_status=custR.value.status; sessionStorage.setItem('bp_user',JSON.stringify(currentUser)); renderKycStatus(custR.value.status); }
+  const vaEl = document.getElementById('overviewVA');
+  if (vaR.status==='fulfilled') {
+    const list = vaR.value?.data||vaR.value?.virtual_accounts||[];
+    vaEl.innerHTML = list.length ? renderDepositInstructions(list[0]) : `<div style="font-size:13px;color:var(--muted)">No virtual account yet. <a href="#" onclick="switchPane('virtual-accounts',null)" style="color:var(--teal);text-decoration:none">Create one →</a></div>`;
+  } else { vaEl.innerHTML = `<div style="font-size:13px;color:var(--muted)">Could not load account details.</div>`; }
+  const txEl = document.getElementById('overviewTransfers');
+  if (txR.status==='fulfilled') {
+    const list = txR.value?.data||txR.value?.transfers||[];
+    txEl.innerHTML = list.length ? renderTxTable(list) : `<div style="font-size:13px;color:var(--muted);padding:.5rem 0">No transfers yet.</div>`;
+  } else { txEl.innerHTML = `<div style="font-size:13px;color:var(--muted)">Could not load transfers.</div>`; }
+  buildRateTicker();
+}
+
+function renderKycStatus(status) {
+  const badge = document.getElementById('overviewKycBadge');
+  const settBadge = document.getElementById('settingsKycStatus');
+  const alert = document.getElementById('kycAlertBanner');
+  const map = {active:{t:'Active · KYC verified',c:'badge-active'},pending:{t:'Pending verification',c:'badge-pending'},approved:{t:'Active · KYC verified',c:'badge-active'}};
+  const s = map[status]||{t:status||'Not verified',c:'badge-inactive'};
+  badge.innerHTML = `<span class="dot"></span> ${s.t}`;
+  settBadge.className = `badge ${s.c}`;
+  settBadge.innerHTML = `<span class="dot"></span> ${status||'unknown'}`;
+  if (status!=='active' && status!=='approved') alert.hidden=false;
+}
+
+function renderDepositInstructions(va) {
+  const us = va?.source_deposit_instructions?.us;
+  if (!us) return `<div style="font-size:13px;color:var(--muted)">Deposit instructions pending.</div>`;
+  const rows = [['Bank',us.bank_name||'Lead Bank'],['Routing',us.routing_number,true],['Account',us.account_number,true],['Type',us.account_type||'checking'],us.memo?['Memo',us.memo,true]:null].filter(Boolean);
+  return `<div class="deposit-block">${rows.map(([l,v,c])=>`<div class="deposit-row"><span class="deposit-label">${l}</span><div style="display:flex;align-items:center;gap:8px"><span class="deposit-value">${v||'—'}</span>${c?`<button class="copy-btn" onclick="copyText('${v}',this)">Copy</button>`:''}</div></div>`).join('')}</div>`;
+}
+function copyText(t,btn){navigator.clipboard.writeText(t).then(()=>{btn.textContent='✓';setTimeout(()=>btn.textContent='Copy',1800)});}
+
+function buildRateTicker() {
+  const text = Object.entries(CA_RATES).map(([k,r])=>`${r.code} ${r.sym}${r.rate.toLocaleString()}`).join(' · ');
+  const doubled = `${text} &nbsp;&nbsp; ${text}`;
+  document.getElementById('rateTicker').innerHTML = `<span>${doubled}</span>`;
+}
+
+/* ═══════════════════════════════════════════════════════
+   TRANSFER
+═══════════════════════════════════════════════════════ */
+function calcLiveQuote() {
+  const amt = parseFloat(document.getElementById('txAmount').value);
+  const cor = document.getElementById('txCorridor').value;
+  const box = document.getElementById('txQuoteBox');
+  if (!amt||!cor||!CA_RATES[cor]){box.hidden=true;return;}
+  const r = CA_RATES[cor];
+  document.getElementById('qRate').textContent = `1 USD = ${r.sym}${r.rate.toLocaleString()}`;
+  document.getElementById('qReceives').textContent = `${r.sym}${((amt-0.50)*r.rate).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}`;
+  box.hidden=false;
+}
+
+async function loadRates() {
+  const el = document.getElementById('liveRates');
+  let html = Object.entries(CA_RATES).map(([k,r])=>`<div class="quote-row"><span>USD → ${r.code}</span><span class="quote-val">${r.sym}${r.rate.toLocaleString()}</span></div>`).join('');
+  el.innerHTML = `<div class="quote-box" style="margin:0">${html}</div>`;
+  try {
+    for (const [from,to] of [['USD','EUR'],['USD','GBP']]) {
+      const d = await bridge(`/exchange-rates?from=${from}&to=${to}`);
+      const rate = parseFloat(d.buy_rate||d.midmarket_rate).toFixed(4);
+      html += `<div class="quote-row"><span>${from} → ${to}</span><span class="quote-val">${rate}</span></div>`;
     }
-    errEl.classList.remove('show')
+    el.innerHTML = `<div class="quote-box" style="margin:0">${html}</div>`;
+  } catch {}
+}
 
-    // Store session
-    const name = email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
-    sessionStorage.setItem('bp_user', JSON.stringify({ email, name }))
-    showDashboard(name, email)
-  })
+async function submitTransfer() {
+  const btn = document.getElementById('txBtn');
+  hideMsg('txError'); document.getElementById('txSuccess').hidden=true;
+  const amt = document.getElementById('txAmount').value;
+  const cor = document.getElementById('txCorridor').value;
+  const recipient = document.getElementById('txRecipient').value.trim();
+  if (!amt||!cor||!recipient){showErr('txError','Please fill in all fields.');return;}
+  if (currentUser.kyc_status!=='active'&&currentUser.kyc_status!=='approved'){showErr('txError','KYC verification required before sending money.');return;}
+  setLoading(btn,true);
+  try {
+    const res = await bridge('/transfers',{method:'POST',body:JSON.stringify({amount:String(parseFloat(amt)-0.5),on_behalf_of_customer_id:currentUser.customer_id,developer_fee:'0.50',source:{payment_rail:'ach',currency:'usd'},destination:{payment_rail:'wire',currency:'usd'},client_reference_id:`baypay-${Date.now()}`})});
+    document.getElementById('txSuccess').hidden=false;
+    document.getElementById('txSuccess').textContent=`Transfer initiated! ID: ${res.id||'pending'}. Status: ${res.state||'awaiting_funds'}`;
+  } catch(e){showErr('txError',e.message);}
+  finally{setLoading(btn,false);}
+}
 
-  // ── Dashboard ─────────────────────────────────────────────────────────
-  function showDashboard(name, email) {
-    $('view-login').style.display = 'none'
-    $('view-dashboard').style.display = 'flex'
+/* ═══════════════════════════════════════════════════════
+   VIRTUAL ACCOUNTS
+═══════════════════════════════════════════════════════ */
+async function loadVA() {
+  const el = document.getElementById('vaList');
+  el.innerHTML='<div class="skel" style="height:200px"></div>';
+  try {
+    const d = await bridge(`/customers/${currentUser.customer_id}/virtual_accounts?limit=20`);
+    const list = d?.data||d?.virtual_accounts||[];
+    if (!list.length){el.innerHTML=`<div class="card" style="text-align:center;padding:2rem;color:var(--muted);font-size:14px">No virtual accounts yet. Create one to receive deposits.</div>`;return;}
+    el.innerHTML = list.map(va=>`
+      <div class="card" style="margin-bottom:1rem">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px">
+          <div><span class="badge ${va.status==='activated'?'badge-active':'badge-inactive'}"><span class="dot"></span>${va.status}</span><div class="mono" style="color:var(--muted);margin-top:5px;font-size:11px">${va.id}</div></div>
+          ${va.status==='activated'?`<button class="btn btn-danger btn-sm" onclick="deactivateVA('${va.id}',this)">Deactivate</button>`:`<button class="btn btn-ghost btn-sm" onclick="reactivateVA('${va.id}',this)">Reactivate</button>`}
+        </div>
+        <div class="card-title">US deposit instructions</div>
+        ${renderDepositInstructions(va)}
+        <div style="margin-top:10px;font-size:12px;color:var(--muted)">Destination: <span class="mono">${va.destination?.chain||'—'} · ${(va.destination?.address||'—').slice(0,14)}…</span></div>
+      </div>`).join('');
+  } catch(e){el.innerHTML=`<div class="error-msg">${e.message}</div>`;}
+}
+async function deactivateVA(id,btn){if(!confirm('Deactivate this account?'))return;setLoading(btn,true);try{await bridge(`/virtual-accounts/${id}/deactivate`,{method:'PUT'});loadVA();}catch(e){alert(e.message);setLoading(btn,false);}}
+async function reactivateVA(id,btn){setLoading(btn,true);try{await bridge(`/virtual-accounts/${id}/reactivate`,{method:'PUT'});loadVA();}catch(e){alert(e.message);setLoading(btn,false);}}
 
-    if (name) {
-      $('db-user-display').textContent = name.split(' ')[0]
-      $('db-avatar-initials').textContent = name.charAt(0).toUpperCase()
-      $('db-greeting').textContent = greeting() + ', ' + name.split(' ')[0] + '.'
-      if ($('settings-email')) $('settings-email').value = email || ''
-      if ($('settings-name')) $('settings-name').value = name
-      if ($('card-holder-name')) $('card-holder-name').textContent = name.split(' ').map((w,i) => i === 0 ? w.charAt(0)+'.' : w).join(' ')
-    }
-  }
+function openCreateVAModal(){
+  showModal(`<h3 style="font-family:var(--serif);font-size:1.4rem;margin-bottom:1rem">New virtual account</h3>
+    <div class="field"><label>Destination chain</label><select id="vaChain"><option value="ethereum">Ethereum</option><option value="base">Base</option><option value="solana">Solana</option><option value="polygon">Polygon</option></select></div>
+    <div class="field"><label>Destination wallet address</label><input type="text" id="vaAddr" placeholder="0x… or base58"></div>
+    <div class="field"><label>Stablecoin</label><select id="vaCurr"><option value="usdc">USDC</option><option value="usdt">USDT</option></select></div>
+    <div id="vaModalErr" hidden class="error-msg"></div>
+    <button class="btn btn-primary btn-full" id="vaModalBtn" onclick="createVA()">Create virtual account</button>`);
+}
+async function createVA(){
+  const btn=document.getElementById('vaModalBtn'); hideMsg('vaModalErr'); setLoading(btn,true);
+  try{await bridge('/virtual-accounts',{method:'POST',body:JSON.stringify({customer_id:currentUser.customer_id,source_currency:'usd',destination:{chain:document.getElementById('vaChain').value,currency:document.getElementById('vaCurr').value,address:document.getElementById('vaAddr').value.trim()}})});closeModal();loadVA();}
+  catch(e){showErr('vaModalErr',e.message);}finally{setLoading(btn,false);}
+}
 
-  function greeting() {
-    const h = new Date().getHours()
-    if (h < 12) return 'Good morning'
-    if (h < 17) return 'Good afternoon'
-    return 'Good evening'
-  }
+/* ═══════════════════════════════════════════════════════
+   CARDS
+═══════════════════════════════════════════════════════ */
+async function loadCards(){
+  const el=document.getElementById('cardsList'); el.innerHTML='<div class="skel" style="height:220px"></div>';
+  try{
+    const d=await bridge(`/customers/${currentUser.customer_id}/cards`);
+    const list=d?.data||d?.cards||[];
+    if(!list.length){el.innerHTML=`<div class="card" style="text-align:center;padding:2rem;color:var(--muted);font-size:14px">No cards provisioned yet. Cards are issued upon request — contact support.</div>`;return;}
+    el.innerHTML=list.map(c=>`<div class="card" style="margin-bottom:1.5rem">
+      <div class="vc"><div style="display:flex;justify-content:space-between">
+        <div class="vc-chip"><div class="vc-chip-cell"></div><div class="vc-chip-cell"></div><div class="vc-chip-cell"></div><div class="vc-chip-cell"></div></div>
+        <div class="vc-logo">Bay Pay</div></div>
+      <div class="vc-num">•••• •••• •••• ${c.last_four||'••••'}</div>
+      <div class="vc-row"><div><div class="vc-fl">Card holder</div><div class="vc-fv">${currentUser.first_name} ${currentUser.last_name}</div></div><div><div class="vc-fl">Expires</div><div class="vc-fv">${c.expiration_month||'—'}/${c.expiration_year||'—'}</div></div><div><div class="vc-fl">Status</div><div class="vc-fv">${c.status||'—'}</div></div></div>
+      <div class="vc-network">VISA</div></div>
+      <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-top:.75rem">
+        ${c.status==='frozen'?`<button class="btn btn-ghost btn-sm" onclick="unfreezeCard('${c.id}',this)">❄️ Unfreeze</button>`:`<button class="btn btn-ghost btn-sm" onclick="freezeCard('${c.id}',this)">🧊 Freeze card</button>`}
+        <button class="btn btn-ghost btn-sm" onclick="loadCardTx('${c.id}')">View transactions</button>
+      </div>
+      <div id="cardTx-${c.id}" style="margin-top:1rem"></div></div>`).join('');
+  }catch(e){el.innerHTML=`<div class="error-msg">${e.message}</div>`;}
+}
+async function freezeCard(id,btn){setLoading(btn,true);try{await bridge(`/cards/${id}/freeze`,{method:'PUT'});loadCards();}catch(e){alert(e.message);setLoading(btn,false);}}
+async function unfreezeCard(id,btn){setLoading(btn,true);try{await bridge(`/cards/${id}/unfreeze`,{method:'PUT'});loadCards();}catch(e){alert(e.message);setLoading(btn,false);}}
+async function loadCardTx(id){
+  const el=document.getElementById(`cardTx-${id}`); el.innerHTML='<div class="skel" style="height:60px"></div>';
+  try{const d=await bridge(`/cards/${id}/transactions?limit=10`);const list=d?.data||d?.transactions||[];el.innerHTML=list.length?`<div class="card-title" style="margin-top:4px">Recent card transactions</div>${renderTxTable(list)}`:`<div style="font-size:13px;color:var(--muted)">No transactions yet.</div>`;}
+  catch(e){el.innerHTML=`<div style="font-size:13px;color:var(--danger)">${e.message}</div>`;}
+}
 
-  function signOut() {
-    sessionStorage.removeItem('bp_user')
-    $('view-dashboard').style.display = 'none'
-    $('view-login').style.display = 'flex'
-    $('login-password').value = ''
-    $('login-email').value = ''
-  }
+/* ═══════════════════════════════════════════════════════
+   LIQUIDATION ADDRESSES
+═══════════════════════════════════════════════════════ */
+async function loadLA(){
+  const el=document.getElementById('laList'); el.innerHTML='<div class="skel" style="height:160px"></div>';
+  try{
+    const d=await bridge(`/customers/${currentUser.customer_id}/liquidation_addresses?limit=20`);
+    const list=d?.data||d?.liquidation_addresses||[];
+    if(!list.length){el.innerHTML=`<div class="card" style="text-align:center;padding:2rem;color:var(--muted);font-size:14px">No liquidation addresses yet.</div>`;return;}
+    el.innerHTML=`<div class="card">${list.map(la=>`<div class="la-item"><div class="la-header"><div><span class="mono" style="font-weight:500">${la.chain} · ${la.currency?.toUpperCase()}</span><div style="font-size:12px;color:var(--muted);margin-top:2px;word-break:break-all">${la.address}</div></div><span class="badge ${la.state==='active'?'badge-active':'badge-inactive'}"><span class="dot"></span>${la.state}</span></div><div class="la-details"><span>→ ${(la.destination_payment_rail||'—').toUpperCase()}</span><span>${(la.destination_currency||'—').toUpperCase()}</span><a href="#" onclick="loadLADrains('${la.id}',this);return false" style="color:var(--teal);text-decoration:none">View drains</a></div><div id="laDrains-${la.id}" style="margin-top:8px"></div></div>`).join('')}</div>`;
+  }catch(e){el.innerHTML=`<div class="error-msg">${e.message}</div>`;}
+}
+async function loadLADrains(id,link){
+  link.textContent='Loading…';
+  const el=document.getElementById(`laDrains-${id}`);
+  try{const d=await bridge(`/liquidation-addresses/${id}/drains?limit=5`);const list=d?.data||d?.drains||[];
+    el.innerHTML=list.length?`<table class="data-table"><thead><tr><th>Date</th><th>Amount</th><th>Currency</th></tr></thead><tbody>${list.map(x=>`<tr><td class="mono">${fmtDate(x.created_at)}</td><td class="mono">${x.amount||'—'}</td><td>${(x.currency||'').toUpperCase()}</td></tr>`).join('')}</tbody></table>`:`<div style="font-size:12px;color:var(--muted)">No drains yet.</div>`;
+    link.textContent='Hide'; link.onclick=()=>{el.innerHTML='';link.textContent='View drains';link.onclick=e=>{e.preventDefault();loadLADrains(id,link)};return false;};
+  }catch(e){el.innerHTML=`<span style="font-size:12px;color:var(--danger)">${e.message}</span>`;link.textContent='View drains';}
+}
+function openCreateLAModal(){
+  showModal(`<h3 style="font-family:var(--serif);font-size:1.4rem;margin-bottom:1rem">New liquidation address</h3>
+    <div class="field"><label>Crypto chain</label><select id="laChain"><option value="ethereum">Ethereum</option><option value="base">Base</option><option value="solana">Solana</option><option value="polygon">Polygon</option><option value="tron">Tron</option></select></div>
+    <div class="field"><label>Stablecoin</label><select id="laCurr"><option value="usdc">USDC</option><option value="usdt">USDT</option></select></div>
+    <div class="field"><label>Payout rail</label><select id="laRail"><option value="ach">ACH (USD)</option><option value="sepa">SEPA (EUR)</option><option value="wire">Wire (USD)</option></select></div>
+    <div class="field"><label>External account ID (from Bridge)</label><input type="text" id="laExtAcct" placeholder="exa_…"></div>
+    <div id="laModalErr" hidden class="error-msg"></div>
+    <button class="btn btn-primary btn-full" id="laModalBtn" onclick="createLA()">Create address</button>`);
+}
+async function createLA(){
+  const btn=document.getElementById('laModalBtn'); hideMsg('laModalErr'); setLoading(btn,true);
+  const rail=document.getElementById('laRail').value;
+  try{await bridge('/liquidation-addresses',{method:'POST',body:JSON.stringify({customer_id:currentUser.customer_id,chain:document.getElementById('laChain').value,currency:document.getElementById('laCurr').value,external_account_id:document.getElementById('laExtAcct').value.trim(),destination_payment_rail:rail,destination_currency:rail==='sepa'?'eur':'usd'})});closeModal();loadLA();}
+  catch(e){showErr('laModalErr',e.message);}finally{setLoading(btn,false);}
+}
 
-  // ── Pane navigation ───────────────────────────────────────────────────
-  const PANES = ['overview', 'transfer', 'cards', 'invest', 'history', 'settings']
+/* ═══════════════════════════════════════════════════════
+   HISTORY
+═══════════════════════════════════════════════════════ */
+async function loadHistory(dir){
+  const el=document.getElementById('historyTable'); el.innerHTML='<div class="skel" style="height:200px"></div>';
+  let qs=`?limit=20&on_behalf_of_customer_id=${currentUser.customer_id}`;
+  if(dir==='next'&&histAfter) qs+=`&starting_after=${histAfter}`;
+  try{
+    const d=await bridge(`/transfers${qs}`);
+    const list=d?.data||d?.transfers||[];
+    histAfter=list.length?list[list.length-1].id:null;
+    document.getElementById('histNextBtn').hidden=list.length<20;
+    document.getElementById('histPrevBtn').hidden=dir!=='next';
+    el.innerHTML=list.length?renderTxTable(list):`<div style="padding:2rem;text-align:center;color:var(--muted);font-size:14px">No transfers yet.</div>`;
+  }catch(e){el.innerHTML=`<div class="error-msg">${e.message}</div>`;}
+}
 
-  function showPane(name, clickedEl) {
-    PANES.forEach(p => {
-      const el = $('pane-' + p)
-      if (el) el.style.display = p === name ? 'block' : 'none'
-    })
-    document.querySelectorAll('.db-nav-item').forEach(el => el.classList.remove('active'))
-    if (clickedEl) clickedEl.classList.add('active')
-  }
+function renderTxTable(list){
+  const rows=list.map(t=>{
+    const st=(t.state||t.status||'unknown').replace(/_/g,' ');
+    const stCls=st.includes('settled')||st.includes('paid')||st.includes('complete')?'badge-active':st.includes('fail')||st.includes('cancel')?'badge-inactive':'badge-pending';
+    const amt=t.amount?`$${parseFloat(t.amount).toFixed(2)}`:(t.billing_amount?`$${parseFloat(t.billing_amount).toFixed(2)}`:'—');
+    return `<tr><td class="mono">${fmtDate(t.created_at)}</td><td style="font-weight:500">${amt}</td><td>${(t.source?.payment_rail||t.source_currency||'—').toUpperCase()}</td><td>${(t.destination?.payment_rail||t.destination_currency||'—').toUpperCase()}</td><td><span class="badge ${stCls}">${st}</span></td><td class="mono" style="font-size:11px;color:var(--muted)">${(t.id||'—').slice(-8)}</td></tr>`;
+  }).join('');
+  return `<table class="data-table"><thead><tr><th>Date</th><th>Amount</th><th>From</th><th>To</th><th>Status</th><th>ID</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
 
-  // ── Send money quote ──────────────────────────────────────────────────
-  const RATES = { KZ: 489.20, UZ: 12640, KG: 87.40, TJ: 10.85, TM: 3.50 }
-  const CURR  = { KZ: '₸', UZ: 'сўм', KG: 'сом', TJ: 'сом.', TM: 'TMT' }
+/* ═══════════════════════════════════════════════════════
+   SETTINGS
+═══════════════════════════════════════════════════════ */
+async function loadSettings(){
+  document.getElementById('setFirst').value=currentUser.first_name||'';
+  document.getElementById('setLast').value=currentUser.last_name||'';
+  document.getElementById('setEmail').value=currentUser.email||'';
+  try{const c=await bridge(`/customers/${currentUser.customer_id}`);renderKycStatus(c.status);}catch{}
+  const eaEl=document.getElementById('externalAccounts');
+  try{
+    const d=await bridge(`/customers/${currentUser.customer_id}/external_accounts`);
+    const list=d?.data||d?.external_accounts||[];
+    eaEl.innerHTML=list.length?`<table class="data-table"><thead><tr><th>Bank</th><th>Type</th><th>Currency</th><th>Status</th></tr></thead><tbody>${list.map(a=>`<tr><td>${a.bank_name||a.account_name||'—'}</td><td class="mono">${a.account_type||a.type||'—'}</td><td class="mono">${(a.currency||'').toUpperCase()}</td><td><span class="badge ${a.status==='active'?'badge-active':'badge-inactive'}">${a.status}</span></td></tr>`).join('')}</tbody></table>`:`<div style="font-size:13px;color:var(--muted)">No linked bank accounts.</div>`;
+  }catch{eaEl.innerHTML=`<div style="font-size:13px;color:var(--muted)">Could not load accounts.</div>`;}
+}
+async function saveProfile(){
+  document.getElementById('settingsMsg').hidden=true;document.getElementById('settingsErr').hidden=true;
+  try{
+    await bridge(`/customers/${currentUser.customer_id}`,{method:'PUT',body:JSON.stringify({first_name:document.getElementById('setFirst').value.trim(),last_name:document.getElementById('setLast').value.trim(),email:document.getElementById('setEmail').value.trim()})});
+    currentUser.first_name=document.getElementById('setFirst').value.trim();currentUser.last_name=document.getElementById('setLast').value.trim();
+    sessionStorage.setItem('bp_user',JSON.stringify(currentUser));
+    document.getElementById('topbarName').textContent=`${currentUser.first_name} ${currentUser.last_name}`;
+    document.getElementById('settingsMsg').hidden=false;document.getElementById('settingsMsg').textContent='Profile updated.';
+  }catch(e){document.getElementById('settingsErr').hidden=false;document.getElementById('settingsErr').textContent=e.message;}
+}
 
-  function calcQuote() {
-    const amount   = parseFloat($('send-amount').value) || 0
-    const corridor = $('send-corridor').value
-    const quoteEl  = $('send-quote')
+/* ── MODAL ───────────────────────────────────────────── */
+function showModal(html){document.getElementById('modalContent').innerHTML=html;document.getElementById('modalBackdrop').style.display='flex';}
+function closeModal(){document.getElementById('modalBackdrop').style.display='none';document.getElementById('modalContent').innerHTML='';}
+document.getElementById('modalBackdrop').addEventListener('click',e=>{if(e.target.id==='modalBackdrop')closeModal();});
 
-    if (amount > 0 && corridor) {
-      const rate    = RATES[corridor]
-      const receive = ((amount - 0.5) * rate).toFixed(0)
-      $('q-receive').textContent = Number(receive).toLocaleString() + ' ' + (CURR[corridor] || '')
-      $('q-rate').textContent    = '1 USD = ' + rate.toLocaleString()
-      quoteEl.classList.add('show')
-    } else {
-      quoteEl.classList.remove('show')
-    }
-  }
-
-  function confirmSend() {
-    const amount   = parseFloat($('send-amount').value) || 0
-    const corridor = $('send-corridor').value
-    if (!amount || !corridor) { alert('Please fill in amount and destination.'); return }
-    alert('Transfer review coming soon! This prototype shows the UI only.')
-  }
-
-  // ── Session restore on load ───────────────────────────────────────────
-  ;(function init() {
-    const stored = sessionStorage.getItem('bp_user')
-    if (stored) {
-      try {
-        const { email, name } = JSON.parse(stored)
-        showDashboard(name, email)
-      } catch(e) {
-        sessionStorage.removeItem('bp_user')
-      }
-    }
-  })()
-
-  // Pulse animation for live dots
-  const style = document.createElement('style')
-  style.textContent = '@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.4}}.chart-live-dot{animation:pulse-dot 2s ease-in-out infinite}'
-  document.head.appendChild(style)
+/* ── SESSION RESTORE ─────────────────────────────────── */
+;(function(){
+  const s=sessionStorage.getItem('bp_user');
+  if(s){try{currentUser=JSON.parse(s);enterDashboard();return;}catch{}}
+  showView('login');
+})();
 </script>
-
 </body>
 </html>
