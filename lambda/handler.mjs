@@ -3,8 +3,8 @@ import { DynamoDBDocumentClient, GetCommand, PutCommand } from '@aws-sdk/lib-dyn
 import { SecretsManagerClient, GetSecretValueCommand } from '@aws-sdk/client-secrets-manager';
 import bcrypt from 'bcryptjs';
 
-const dynamo = DynamoDBDocumentClient.from(new DynamoDBClient({}));
-const secrets = new SecretsManagerClient({});
+const dynamo = DynamoDBDocumentClient.from(new DynamoDBClient({ region: 'us-east-1' }));
+const secrets = new SecretsManagerClient({ region: 'us-east-1' });
 
 const TABLE  = process.env.DYNAMODB_TABLE;
 const BRIDGE = process.env.BRIDGE_BASE || 'https://api.bridge.xyz/v0';
@@ -78,7 +78,7 @@ export async function handler(event) {
 
   if (path === '/auth/signup' && method === 'POST') return signup(body);
   if (path === '/auth/login'  && method === 'POST') return login(body);
-  if (path.startsWith('/bridge/')) return proxy(path.slice(7), method, body, qs);
+  if (path.startsWith('/bridge/')) return proxy(path.slice(8), method, body, qs);
 
   return err('Not found', 404);
 }
@@ -149,4 +149,8 @@ async function login(body) {
 async function proxy(bridgePath, method, body, qs) {
   const { status, data } = await bridgeFetch(`/${bridgePath}`, method, body, qs);
   return { statusCode: status, headers: cors(), body: JSON.stringify(data) };
+}
+
+export async function healthcheck() {
+  return ok({ status: 'ok', table: TABLE, bridge: BRIDGE });
 }
