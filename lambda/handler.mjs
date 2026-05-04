@@ -62,25 +62,30 @@ function cors() {
 }
 
 export async function handler(event) {
-  const path = event.rawPath || '/';
-  const method = event.requestContext?.http?.method || 'GET';
+  try {
+    const path = event.rawPath || '/';
+    const method = event.requestContext?.http?.method || 'GET';
 
-  if (method === 'OPTIONS') return ok({});
+    if (method === 'OPTIONS') return ok({});
 
-  let body = null;
-  if (event.body) {
-    try { body = JSON.parse(event.body); } catch {}
+    let body = null;
+    if (event.body) {
+      try { body = JSON.parse(event.body); } catch {}
+    }
+
+    const qs = event.queryStringParameters
+      ? new URLSearchParams(event.queryStringParameters).toString()
+      : '';
+
+    if (path === '/auth/signup' && method === 'POST') return signup(body);
+    if (path === '/auth/login'  && method === 'POST') return login(body);
+    if (path.startsWith('/bridge/')) return proxy(path.slice(8), method, body, qs);
+
+    return err('Not found', 404);
+  } catch (e) {
+    console.error('Unhandled error:', e);
+    return err(`Server error: ${e.message}`, 500);
   }
-
-  const qs = event.queryStringParameters
-    ? new URLSearchParams(event.queryStringParameters).toString()
-    : '';
-
-  if (path === '/auth/signup' && method === 'POST') return signup(body);
-  if (path === '/auth/login'  && method === 'POST') return login(body);
-  if (path.startsWith('/bridge/')) return proxy(path.slice(8), method, body, qs);
-
-  return err('Not found', 404);
 }
 
 async function signup(body) {
@@ -128,7 +133,13 @@ async function login(body) {
   const { email, password } = body || {};
   if (!email || !password) return err('email and password are required');
 
-  const result = await dynamo.send(new GetCommand({ TableName: TABLE, Key: { email } }));
+  let result;
+  try {
+    result = await dynamo.send(new GetCommand({ TableName: TABLE, Key: { email } }));
+  } catch (e) {
+    return err(`DynamoDB error: ${e.message}`, 500);
+  }
+
   if (!result.Item) return err('Invalid email or password', 401);
 
   const valid = await bcrypt.compare(password, result.Item.password_hash);
