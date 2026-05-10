@@ -301,16 +301,17 @@
 <div id="view-kyc" class="kyc-shell" hidden>
   <div class="kyc-card">
     <div style="font-size:3rem;margin-bottom:1rem">🪪</div>
-    <h2>Verify your identity</h2>
-    <p>Bridge requires a quick identity check before you can send money. It takes about 3 minutes and is handled securely by Bridge.xyz.</p>
+    <h2>Complete your account setup</h2>
+    <p>Two quick steps are required before you can send money. Both open in a secure Bridge.xyz page — no documents are shared with Bay Pay.</p>
     <div class="kyc-step-row">
-      <div class="kyc-step"><div class="kyc-step-num">1</div>Upload a government-issued ID</div>
-      <div class="kyc-step"><div class="kyc-step-num">2</div>Take a short selfie</div>
-      <div class="kyc-step"><div class="kyc-step-num">3</div>Return here — we'll activate your account</div>
+      <div class="kyc-step"><div class="kyc-step-num">1</div>Accept Terms of Service</div>
+      <div class="kyc-step"><div class="kyc-step-num">2</div>Verify your identity (ID + selfie, ~3 min)</div>
+      <div class="kyc-step"><div class="kyc-step-num">3</div>Return here and tap "I've finished"</div>
     </div>
-    <a id="kycLink" href="#" target="_blank" class="btn btn-teal btn-full btn-lg" style="margin-bottom:12px">Start verification →</a>
-    <button class="btn btn-ghost btn-full" onclick="checkKycAndEnter()">I've completed verification</button>
-    <p style="font-size:12px;color:var(--muted);margin-top:14px">Bay Pay never sees your raw documents.</p>
+    <a id="tosLink" href="#" target="_blank" class="btn btn-teal btn-full btn-lg" style="margin-bottom:10px">Step 1 — Accept Terms of Service →</a>
+    <a id="kycLink" href="#" target="_blank" class="btn btn-outline btn-full btn-lg" style="margin-bottom:14px">Step 2 — Start identity verification →</a>
+    <button class="btn btn-ghost btn-full" onclick="checkKycAndEnter()">I've finished — enter dashboard</button>
+    <p style="font-size:12px;color:var(--muted);margin-top:14px">These links are only valid for you. Do not share them.</p>
   </div>
 </div>
 
@@ -603,16 +604,29 @@ document.getElementById('signupForm').addEventListener('submit', async e => {
     const result = await apiCall('/auth/signup',{method:'POST',body:JSON.stringify({first_name:document.getElementById('signupFirst').value.trim(),last_name:document.getElementById('signupLast').value.trim(),email:document.getElementById('signupEmail').value.trim(),password:pw})});
     currentUser = {customer_id:result.customer_id,first_name:result.first_name,last_name:result.last_name,email:document.getElementById('signupEmail').value.trim(),kyc_status:result.kyc_status};
     sessionStorage.setItem('bp_user', JSON.stringify(currentUser));
-    if (result.kyc_link_url) { document.getElementById('kycLink').href = result.kyc_link_url; showView('kyc'); }
-    else { enterDashboard(); }
+    if (result.tos_link_url || result.kyc_link_url) {
+      const tosEl = document.getElementById('tosLink');
+      const kycEl = document.getElementById('kycLink');
+      if (result.tos_link_url) { tosEl.href = result.tos_link_url; tosEl.style.display = ''; }
+      else { tosEl.style.display = 'none'; }
+      if (result.kyc_link_url) { kycEl.href = result.kyc_link_url; kycEl.style.display = ''; }
+      else { kycEl.style.display = 'none'; }
+      showView('kyc');
+    } else { enterDashboard(); }
   } catch(err) { showErr('signupError', err.message); }
   finally { setLoading(btn,false); }
 });
 
 /* ── KYC ─────────────────────────────────────────────── */
 async function openKycLink() {
-  try { const d = await bridge(`/customers/${currentUser.customer_id}/kyc-link`); const url=d.kyc_link||d.url; if(url) window.open(url,'_blank'); }
-  catch { alert('Could not fetch KYC link. Please try again.'); }
+  try {
+    const d = await apiCall('/auth/kyc-links', {method:'POST', body:JSON.stringify({customer_id: currentUser.customer_id, first_name: currentUser.first_name, last_name: currentUser.last_name, email: currentUser.email})});
+    const tosEl = document.getElementById('tosLink');
+    const kycEl = document.getElementById('kycLink');
+    if (d.tos_link_url) { tosEl.href = d.tos_link_url; tosEl.style.display = ''; } else { tosEl.style.display = 'none'; }
+    if (d.kyc_link_url) { kycEl.href = d.kyc_link_url; kycEl.style.display = ''; } else { kycEl.style.display = 'none'; }
+    showView('kyc');
+  } catch { alert('Could not fetch verification links. Please try again.'); }
 }
 async function checkKycAndEnter() {
   try { const c = await bridge(`/customers/${currentUser.customer_id}`); currentUser.kyc_status=c.status; sessionStorage.setItem('bp_user',JSON.stringify(currentUser)); } catch {}

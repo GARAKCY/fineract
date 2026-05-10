@@ -23,13 +23,12 @@ async function getBridgeKey() {
   return _cachedKey;
 }
 
-async function bridgeFetch(path, method = 'GET', body = null, qs = '') {
+async function bridgeFetch(path, method = 'GET', body = null, qs = '', idempotencyKey = null) {
   const key = await getBridgeKey();
   const url = `${BRIDGE}${path}${qs ? '?' + qs : ''}`;
-  const opts = {
-    method,
-    headers: { 'Api-Key': key, 'Content-Type': 'application/json' }
-  };
+  const headers = { 'Api-Key': key, 'Content-Type': 'application/json' };
+  if (method === 'POST') headers['Idempotency-Key'] = idempotencyKey || crypto.randomUUID();
+  const opts = { method, headers };
   if (body && method !== 'GET') opts.body = JSON.stringify(body);
   const r = await fetch(url, opts);
   const data = await r.json().catch(() => ({}));
@@ -53,12 +52,7 @@ function err(message, status = 400) {
 }
 
 function cors() {
-  return {
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Content-Type,Authorization',
-    'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS'
-  };
+  return { 'Content-Type': 'application/json' };
 }
 
 export async function handler(event) {
@@ -77,9 +71,11 @@ export async function handler(event) {
       ? new URLSearchParams(event.queryStringParameters).toString()
       : '';
 
-    if (path === '/auth/signup' && method === 'POST') return signup(body);
-    if (path === '/auth/login'  && method === 'POST') return login(body);
-    if (path.startsWith('/bridge/')) return proxy(path.slice(8), method, body, qs);
+    const idempotencyKey = event.headers?.['idempotency-key'] || null;
+    if (path === '/auth/signup'    && method === 'POST') return signup(body);
+    if (path === '/auth/login'     && method === 'POST') return login(body);
+    if (path === '/auth/kyc-links' && method === 'POST') return getKycLinks(body);
+    if (path.startsWith('/bridge/')) return proxy(path.slice(8), method, body, qs, idempotencyKey);
 
     return err('Not found', 404);
   } catch (e) {
@@ -117,7 +113,11 @@ async function signup(body) {
     }
   }));
 
-  const { data: kycData } = await bridgeFetch(`/customers/${customer.id}/kyc-link`, 'GET');
+  const { data: kycData } = await bridgeFetch('/kyc_links', 'POST', {
+    full_name: `${first_name} ${last_name}`,
+    email,
+    type: 'individual'
+  });
 
   return ok({
     customer_id: customer.id,
@@ -125,7 +125,8 @@ async function signup(body) {
     last_name,
     email,
     kyc_status: customer.status,
-    kyc_link_url: kycData?.kyc_link || kycData?.url || null
+    kyc_link_url: kycData?.kyc_link || null,
+    tos_link_url: kycData?.tos_link || null
   }, 201);
 }
 
@@ -157,8 +158,22 @@ async function login(body) {
   });
 }
 
-async function proxy(bridgePath, method, body, qs) {
-  const { status, data } = await bridgeFetch(`/${bridgePath}`, method, body, qs);
+async function getKycLinks(body) {
+  const { first_name, last_name, email } = body || {};
+  if (!first_name || !last_name || !email) return err('first_name, last_name, email are required');
+  const { data: kycData } = await bridgeFetch('/kyc_links', 'POST', {
+    full_name: `${first_name} ${last_name}`,
+    email,
+    type: 'individual'
+  });
+  return ok({
+    kyc_link_url: kycData?.kyc_link || null,
+    tos_link_url: kycData?.tos_link || null
+  });
+}
+
+async function proxy(bridgePath, method, body, qs, idempotencyKey) {
+  const { status, data } = await bridgeFetch(`/${bridgePath}`, method, body, qs, idempotencyKey);
   return { statusCode: status, headers: cors(), body: JSON.stringify(data) };
 }
 
