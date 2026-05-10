@@ -113,11 +113,7 @@ async function signup(body) {
     }
   }));
 
-  const { data: kycData } = await bridgeFetch('/kyc_links', 'POST', {
-    full_name: `${first_name} ${last_name}`,
-    email,
-    type: 'individual'
-  });
+  const { kyc_link_url, tos_link_url } = await fetchKycLinks(first_name, last_name, email);
 
   return ok({
     customer_id: customer.id,
@@ -125,8 +121,8 @@ async function signup(body) {
     last_name,
     email,
     kyc_status: customer.status,
-    kyc_link_url: kycData?.kyc_link || null,
-    tos_link_url: kycData?.tos_link || null
+    kyc_link_url,
+    tos_link_url
   }, 201);
 }
 
@@ -158,18 +154,26 @@ async function login(body) {
   });
 }
 
-async function getKycLinks(body) {
-  const { first_name, last_name, email } = body || {};
-  if (!first_name || !last_name || !email) return err('first_name, last_name, email are required');
-  const { data: kycData } = await bridgeFetch('/kyc_links', 'POST', {
+async function fetchKycLinks(first_name, last_name, email) {
+  const { status, data } = await bridgeFetch('/kyc_links', 'POST', {
     full_name: `${first_name} ${last_name}`,
     email,
     type: 'individual'
   });
-  return ok({
-    kyc_link_url: kycData?.kyc_link || null,
-    tos_link_url: kycData?.tos_link || null
-  });
+  // Bridge returns 400 duplicate_record when a link already exists for this email;
+  // the existing link is included in data.existing_kyc_link
+  const resolved = (status === 400 && data?.existing_kyc_link) ? data.existing_kyc_link : data;
+  return {
+    kyc_link_url: resolved?.kyc_link || null,
+    tos_link_url: resolved?.tos_link || null
+  };
+}
+
+async function getKycLinks(body) {
+  const { first_name, last_name, email } = body || {};
+  if (!first_name || !last_name || !email) return err('first_name, last_name, email are required');
+  const links = await fetchKycLinks(first_name, last_name, email);
+  return ok(links);
 }
 
 async function proxy(bridgePath, method, body, qs, idempotencyKey) {
