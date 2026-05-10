@@ -60,7 +60,8 @@
     .field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
     .pw-wrap{position:relative}
     .pw-wrap input{padding-right:42px}
-    .pw-toggle{position:absolute;right:11px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:16px;line-height:1;padding:2px}
+    .pw-toggle{position:absolute;right:11px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);line-height:1;padding:2px;display:flex;align-items:center}
+    .pw-toggle svg{width:16px;height:16px;display:block}
 
     /* ── Auth shell ───────────────────────────────────── */
     .auth-shell{display:flex;min-height:100vh}
@@ -74,7 +75,8 @@
     .auth-tagline{font-family:var(--serif);font-style:italic;font-size:1.9rem;line-height:1.3;color:#fff;opacity:.95}
     .auth-features{display:flex;flex-direction:column;gap:12px}
     .auth-feat{display:flex;align-items:flex-start;gap:12px;font-size:14px;color:rgba(255,255,255,.8);line-height:1.5}
-    .auth-feat-icon{width:28px;height:28px;border-radius:50%;background:rgba(43,174,201,.2);border:1px solid rgba(43,174,201,.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-size:13px}
+    .auth-feat-icon{width:28px;height:28px;border-radius:50%;background:rgba(43,174,201,.2);border:1px solid rgba(43,174,201,.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;color:var(--teal)}
+    .auth-feat-icon svg{width:13px;height:13px;display:block}
     .auth-corridors{display:flex;flex-wrap:wrap;gap:6px}
     .corr-tag{padding:4px 10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:20px;font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.7)}
     .auth-switch{font-size:13px;color:rgba(255,255,255,.6)}
@@ -111,7 +113,8 @@
     .nav-item{display:flex;align-items:center;gap:10px;padding:9px 1.25rem;font-size:13.5px;color:rgba(255,255,255,.62);cursor:pointer;border-left:3px solid transparent;transition:all .15s;user-select:none}
     .nav-item:hover{background:rgba(255,255,255,.06);color:#fff}
     .nav-item.active{color:#fff;border-left-color:var(--teal);background:rgba(43,174,201,.1)}
-    .nav-item-icon{width:18px;text-align:center;font-size:15px;flex-shrink:0}
+    .nav-item-icon{width:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .nav-item-icon svg{width:16px;height:16px;display:block}
     .nav-divider{height:1px;background:rgba(255,255,255,.08);margin:8px 1.25rem}
     .nav-signout{margin-top:auto;padding-top:.75rem}
 
@@ -163,7 +166,8 @@
     .qa-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem}
     .qa-btn{display:flex;flex-direction:column;align-items:center;gap:7px;padding:.85rem .5rem;background:var(--paper-3);border:1.5px solid var(--line);border-radius:10px;cursor:pointer;transition:all .15s;text-align:center}
     .qa-btn:hover{border-color:var(--teal);background:var(--teal-tint)}
-    .qa-icon{width:34px;height:34px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px}
+    .qa-icon{width:34px;height:34px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center}
+    .qa-icon svg{width:16px;height:16px;display:block}
     .qa-label{font-size:12px;font-weight:500;color:var(--ink)}
 
     /* ── Transfer / quote ─────────────────────────────── */
@@ -226,9 +230,9 @@
     </div>
     <div class="auth-tagline">Move money across borders in under two minutes.</div>
     <div class="auth-features">
-      <div class="auth-feat"><div class="auth-feat-icon">💸</div><div>$0.50 flat fee — no FX margin, no surprises</div></div>
-      <div class="auth-feat"><div class="auth-feat-icon">⚡</div><div>Average settlement in 1 min 47 sec</div></div>
-      <div class="auth-feat"><div class="auth-feat-icon">🔒</div><div>Powered by Bridge.xyz — licensed &amp; regulated</div></div>
+      <div class="auth-feat"><div class="auth-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div>$0.50 flat fee — no FX margin, no surprises</div></div>
+      <div class="auth-feat"><div class="auth-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div><div>Average settlement in 1 min 47 sec</div></div>
+      <div class="auth-feat"><div class="auth-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg></div><div>Powered by Bridge.xyz — licensed &amp; regulated</div></div>
     </div>
     <div class="auth-corridors">
       <span class="corr-tag">🇰🇿 KZ</span><span class="corr-tag">🇺🇿 UZ</span>
@@ -244,7 +248,7 @@
         <div class="field"><label for="loginEmail">Email address</label><input type="email" id="loginEmail" autocomplete="email" placeholder="you@example.com" required></div>
         <div class="field"><label for="loginPw">Password</label>
           <div class="pw-wrap"><input type="password" id="loginPw" autocomplete="current-password" placeholder="••••••••" required>
-          <button type="button" class="pw-toggle" onclick="togglePw('loginPw',this)">👁</button></div>
+          <button type="button" class="pw-toggle" onclick="togglePw('loginPw',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
         </div>
         <div id="loginError" hidden class="error-msg"></div>
         <button type="submit" class="btn btn-primary btn-full btn-lg" id="loginBtn" style="margin-top:8px">Sign in →</button>
@@ -265,9 +269,9 @@
     </div>
     <div class="auth-tagline">Your money, moving at the speed of the internet.</div>
     <div class="auth-features">
-      <div class="auth-feat"><div class="auth-feat-icon">🌍</div><div>5 Central Asian corridors, 1 platform</div></div>
-      <div class="auth-feat"><div class="auth-feat-icon">🏦</div><div>Virtual US bank account included free</div></div>
-      <div class="auth-feat"><div class="auth-feat-icon">💳</div><div>Visa card for stablecoin spending</div></div>
+      <div class="auth-feat"><div class="auth-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div><div>5 Central Asian corridors, 1 platform</div></div>
+      <div class="auth-feat"><div class="auth-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 22h18"/><path d="M6 18V9"/><path d="M10 18V9"/><path d="M14 18V9"/><path d="M18 18V9"/><path d="M12 2 2 7h20L12 2z"/></svg></div><div>Virtual US bank account included free</div></div>
+      <div class="auth-feat"><div class="auth-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div><div>Visa card for stablecoin spending</div></div>
     </div>
     <div class="auth-switch">Already have an account? <a href="#" onclick="showView('login');return false">Sign in →</a></div>
   </div>
@@ -283,11 +287,11 @@
         <div class="field"><label for="signupEmail">Email address</label><input type="email" id="signupEmail" autocomplete="email" placeholder="you@example.com" required></div>
         <div class="field"><label for="signupPw">Password</label>
           <div class="pw-wrap"><input type="password" id="signupPw" autocomplete="new-password" placeholder="Min 8 characters" required minlength="8">
-          <button type="button" class="pw-toggle" onclick="togglePw('signupPw',this)">👁</button></div>
+          <button type="button" class="pw-toggle" onclick="togglePw('signupPw',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
         </div>
         <div class="field"><label for="signupPwC">Confirm password</label>
           <div class="pw-wrap"><input type="password" id="signupPwC" autocomplete="new-password" placeholder="Repeat password" required minlength="8">
-          <button type="button" class="pw-toggle" onclick="togglePw('signupPwC',this)">👁</button></div>
+          <button type="button" class="pw-toggle" onclick="togglePw('signupPwC',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
         </div>
         <div id="signupError" hidden class="error-msg"></div>
         <button type="submit" class="btn btn-teal btn-full btn-lg" id="signupBtn" style="margin-top:8px">Create account →</button>
@@ -300,7 +304,7 @@
 <!-- ══ VIEW: KYC ════════════════════════════════════════ -->
 <div id="view-kyc" class="kyc-shell" hidden>
   <div class="kyc-card">
-    <div style="font-size:3rem;margin-bottom:1rem">🪪</div>
+    <div style="width:64px;height:64px;border-radius:16px;background:rgba(43,174,201,.12);border:1.5px solid rgba(43,174,201,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;color:var(--teal)"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><circle cx="8" cy="12" r="2"/><path d="M14 9h4"/><path d="M14 12h4"/><path d="M11 15.5H6a1.5 1.5 0 0 0-1.5 1.5v.5"/></svg></div>
     <h2>Complete your account setup</h2>
     <p>Two quick steps are required before you can send money. Both open in a secure Bridge.xyz page — no documents are shared with Bay Pay.</p>
     <div class="kyc-step-row">
@@ -334,20 +338,20 @@
     <nav class="dash-sidebar">
       <div class="nav-section">
         <div class="nav-section-label">Account</div>
-        <div class="nav-item active" data-pane="overview" onclick="switchPane('overview',this)"><span class="nav-item-icon">🏠</span><span>Overview</span></div>
-        <div class="nav-item" data-pane="transfer" onclick="switchPane('transfer',this)"><span class="nav-item-icon">💸</span><span>Send money</span></div>
-        <div class="nav-item" data-pane="virtual-accounts" onclick="switchPane('virtual-accounts',this)"><span class="nav-item-icon">🏦</span><span>Virtual accounts</span></div>
-        <div class="nav-item" data-pane="cards" onclick="switchPane('cards',this)"><span class="nav-item-icon">💳</span><span>Cards</span></div>
-        <div class="nav-item" data-pane="liquidation" onclick="switchPane('liquidation',this)"><span class="nav-item-icon">🔄</span><span>Liquidation</span></div>
+        <div class="nav-item active" data-pane="overview" onclick="switchPane('overview',this)"><span class="nav-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span><span>Overview</span></div>
+        <div class="nav-item" data-pane="transfer" onclick="switchPane('transfer',this)"><span class="nav-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></span><span>Send money</span></div>
+        <div class="nav-item" data-pane="virtual-accounts" onclick="switchPane('virtual-accounts',this)"><span class="nav-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 22h18"/><path d="M6 18V9"/><path d="M10 18V9"/><path d="M14 18V9"/><path d="M18 18V9"/><path d="M12 2 2 7h20L12 2z"/></svg></span><span>Virtual accounts</span></div>
+        <div class="nav-item" data-pane="cards" onclick="switchPane('cards',this)"><span class="nav-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></span><span>Cards</span></div>
+        <div class="nav-item" data-pane="liquidation" onclick="switchPane('liquidation',this)"><span class="nav-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg></span><span>Liquidation</span></div>
       </div>
       <div class="nav-section">
         <div class="nav-section-label">Activity</div>
-        <div class="nav-item" data-pane="history" onclick="switchPane('history',this)"><span class="nav-item-icon">📋</span><span>History</span></div>
+        <div class="nav-item" data-pane="history" onclick="switchPane('history',this)"><span class="nav-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span><span>History</span></div>
       </div>
       <div class="nav-section nav-signout">
         <div class="nav-divider"></div>
-        <div class="nav-item" data-pane="settings" onclick="switchPane('settings',this)"><span class="nav-item-icon">⚙️</span><span>Settings</span></div>
-        <div class="nav-item" onclick="signOut()"><span class="nav-item-icon">🚪</span><span>Sign out</span></div>
+        <div class="nav-item" data-pane="settings" onclick="switchPane('settings',this)"><span class="nav-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></span><span>Settings</span></div>
+        <div class="nav-item" onclick="signOut()"><span class="nav-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span><span>Sign out</span></div>
       </div>
     </nav>
 
@@ -358,7 +362,7 @@
         <div class="pane-title">Overview</div>
         <div class="pane-sub" id="overviewGreeting">Good morning</div>
         <div id="kycAlertBanner" class="kyc-alert" hidden>
-          <span>⚠️ Complete identity verification to unlock transfers and your virtual account.</span>
+          <span style="display:flex;align-items:center;gap:8px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Complete identity verification to unlock transfers and your virtual account.</span>
           <button class="btn btn-ghost btn-sm" onclick="openKycLink()">Verify now →</button>
         </div>
         <div class="grid-2" style="margin-bottom:1rem">
@@ -371,10 +375,10 @@
           <div class="card">
             <div class="card-title">Quick actions</div>
             <div class="qa-grid">
-              <div class="qa-btn" onclick="switchPane('transfer',null)"><div class="qa-icon">💸</div><div class="qa-label">Send</div></div>
-              <div class="qa-btn" onclick="switchPane('virtual-accounts',null)"><div class="qa-icon">🏦</div><div class="qa-label">Deposit</div></div>
-              <div class="qa-btn" onclick="switchPane('cards',null)"><div class="qa-icon">💳</div><div class="qa-label">Cards</div></div>
-              <div class="qa-btn" onclick="switchPane('liquidation',null)"><div class="qa-icon">🔄</div><div class="qa-label">Off-ramp</div></div>
+              <div class="qa-btn" onclick="switchPane('transfer',null)"><div class="qa-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></div><div class="qa-label">Send</div></div>
+              <div class="qa-btn" onclick="switchPane('virtual-accounts',null)"><div class="qa-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 22h18"/><path d="M6 18V9"/><path d="M10 18V9"/><path d="M14 18V9"/><path d="M18 18V9"/><path d="M12 2 2 7h20L12 2z"/></svg></div><div class="qa-label">Deposit</div></div>
+              <div class="qa-btn" onclick="switchPane('cards',null)"><div class="qa-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div><div class="qa-label">Cards</div></div>
+              <div class="qa-btn" onclick="switchPane('liquidation',null)"><div class="qa-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg></div><div class="qa-label">Off-ramp</div></div>
             </div>
           </div>
         </div>
@@ -564,10 +568,12 @@ function showView(name) {
     document.getElementById(`view-${v}`).hidden = (v !== name);
   });
 }
+const _eyeOn  = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+const _eyeOff = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
 function togglePw(id, btn) {
   const el = document.getElementById(id);
   el.type = el.type==='password'?'text':'password';
-  btn.textContent = el.type==='password'?'👁':'🙈';
+  btn.innerHTML = el.type==='password' ? _eyeOn : _eyeOff;
 }
 function setLoading(btn, on) {
   btn.disabled = on;
