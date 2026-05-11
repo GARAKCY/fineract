@@ -235,7 +235,7 @@
     <div class="auth-features">
       <div class="auth-feat"><div class="auth-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div>$0.50 flat fee — no FX margin, no surprises</div></div>
       <div class="auth-feat"><div class="auth-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div><div>Average settlement in 1 min 47 sec</div></div>
-      <div class="auth-feat"><div class="auth-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg></div><div>Secured by Bridge.xyz infrastructure</div></div>
+      <div class="auth-feat"><div class="auth-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg></div><div>End-to-end encrypted transfers</div></div>
     </div>
     <div class="auth-corridors">
       <span class="corr-tag">🇰🇿 KZ</span><span class="corr-tag">🇺🇿 UZ</span>
@@ -309,7 +309,7 @@
   <div class="kyc-card">
     <div style="width:64px;height:64px;border-radius:16px;background:rgba(43,174,201,.12);border:1.5px solid rgba(43,174,201,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;color:var(--teal)"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><circle cx="8" cy="12" r="2"/><path d="M14 9h4"/><path d="M14 12h4"/><path d="M11 15.5H6a1.5 1.5 0 0 0-1.5 1.5v.5"/></svg></div>
     <h2>Complete your account setup</h2>
-    <p>Two quick steps are required before you can send money. Both open in a secure Bridge.xyz page — no documents are shared with Bay Pay.</p>
+    <p>Two quick steps are required before you can send money. Both open in a secure external page — no documents are stored by Bay Pay.</p>
     <div class="kyc-step-row">
       <div class="kyc-step"><div class="kyc-step-num">1</div>Accept Terms of Service</div>
       <div class="kyc-step"><div class="kyc-step-num">2</div>Verify your identity (ID + selfie, ~3 min)</div>
@@ -544,7 +544,7 @@
 /* ── CONFIG ── Set this after AWS API Gateway deploy ────── */
 const API = 'https://mv5vudykr2k3goa2jxqy7bs7ii0vssjm.lambda-url.us-east-1.on.aws';
 
-/* Central Asia FX rates (USD basis; Bridge doesn't cover these corridors directly) */
+/* Central Asia FX rates (USD basis) */
 const CA_RATES = {
   KZ:{code:'KZT',sym:'₸',rate:489.20},
   UZ:{code:'UZS',sym:"so'm",rate:12640},
@@ -861,7 +861,7 @@ function openCreateLAModal(){
     <div class="field"><label>Crypto chain</label><select id="laChain"><option value="ethereum">Ethereum</option><option value="base">Base</option><option value="solana">Solana</option><option value="polygon">Polygon</option><option value="tron">Tron</option></select></div>
     <div class="field"><label>Stablecoin</label><select id="laCurr"><option value="usdc">USDC</option><option value="usdt">USDT</option></select></div>
     <div class="field"><label>Payout rail</label><select id="laRail"><option value="ach">ACH (USD)</option><option value="sepa">SEPA (EUR)</option><option value="wire">Wire (USD)</option></select></div>
-    <div class="field"><label>External account ID (from Bridge)</label><input type="text" id="laExtAcct" placeholder="exa_…"></div>
+    <div class="field"><label>External account ID</label><input type="text" id="laExtAcct" placeholder="exa_…"></div>
     <div id="laModalErr" hidden class="error-msg"></div>
     <button class="btn btn-primary btn-full" id="laModalBtn" onclick="createLA()">Create address</button>`);
 }
